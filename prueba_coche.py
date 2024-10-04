@@ -19,6 +19,8 @@ WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 GRAY = (200, 200, 200)
 RED = (255, 0, 0)
+GREEN = (0, 255, 0)
+BLUE = (0, 0, 255)
 
 # Load images
 car_img = pygame.image.load('imgs/car.png')
@@ -50,6 +52,14 @@ class Car:
     def draw(self, screen):
         screen.blit(self.image, (self.x, self.y))
 
+    def obstacle_sensor(self, obstacles):
+        for obstacle in obstacles:
+            
+            pygame.draw.line(screen, GREEN, 
+                             (self.x + CAR_WIDTH // 2, self.y), 
+                             (obstacle.x + OBSTACLE_WIDTH // 2, 
+                              obstacle.y + OBSTACLE_HEIGHT), 2)
+
 # Obstacle class
 class Obstacle:
     def __init__(self):
@@ -68,6 +78,7 @@ class Obstacle:
     def is_off_screen(self):
         return self.y > SCREEN_HEIGHT
 
+# TODO revisa que esto no afecte a lo otro de colisiones
     def check_collision(self, car):
         if self.y + self.height > car.y and self.y < car.y + CAR_HEIGHT:
             if self.x + self.width > car.x and self.x < car.x + CAR_WIDTH:
@@ -76,7 +87,29 @@ class Obstacle:
 
 #def moveInTimeIntervals(time_offset, move_left, start_time):
 
+def spawn_despawn_obstacles(obstacles, score):
 
+    if random.randint(1, 50) == 1:  # Adjusted obstacle frequency
+            obstacles.append(Obstacle())
+
+    for obstacle in obstacles[:]:
+            obstacle.move()
+            obstacle.draw(screen)
+            if obstacle.is_off_screen():
+                obstacles.remove(obstacle)
+                score += 1
+
+def obstacle_collisions(obstacles, car):
+    for obstacle in obstacles:
+        if obstacle.check_collision(car):
+            return True #para running = False
+        else:
+            return False
+        
+# TODO spawnear solo cuando no haya más obstaculos en la carretera
+# TODO sensor debe funcionar solo hasta que estén a la misma altura
+# TODO sensor debe tener un arco de acción
+# TODO programar más sensores
 
 # Game loop
 def game_loop():
@@ -88,7 +121,6 @@ def game_loop():
     start_time = pygame.time.get_ticks()
 
     # New variables
-    move_left = True
     time_offset = True
 
     while running:
@@ -112,11 +144,9 @@ def game_loop():
             if direction == 1:
                 car.move_left()
                 car.draw(screen)
-                move_left = False
             else:         
                 car.move_right()
                 car.draw(screen)
-                move_left = True
         
             time_offset = True
         
@@ -127,22 +157,20 @@ def game_loop():
         if keys[pygame.K_RIGHT]:
             car.move_right()'''
 
-        if random.randint(1, 50) == 1:  # Adjusted obstacle frequency
-            obstacles.append(Obstacle())
-
         screen.fill(GRAY)
         pygame.draw.rect(screen, BLACK, ((SCREEN_WIDTH - ROAD_WIDTH) // 2, 0, ROAD_WIDTH, SCREEN_HEIGHT))
 
         car.draw(screen)
 
-        for obstacle in obstacles[:]:
-            obstacle.move()
-            obstacle.draw(screen)
-            if obstacle.is_off_screen():
-                obstacles.remove(obstacle)
-                score += 1
-            if obstacle.check_collision(car):
-                running = False
+        #TODO problema: desacolpar el check de colisión del spawn??
+        # si colisionan o sale de la pantalla se dereferencia el obstaculo...
+        spawn_despawn_obstacles(obstacles, score)
+        collision = obstacle_collisions(obstacles, car)
+        if collision:
+            running = False
+    
+        # "linea" del sensor, el orden de dibujo importa
+        car.obstacle_sensor(obstacles)
 
         score_text = font.render(f"Score: {score}", True, BLACK)
         screen.blit(score_text, (10, 10))
