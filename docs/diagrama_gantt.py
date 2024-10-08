@@ -6,8 +6,8 @@ from matplotlib.dates import DateFormatter
 # sujeto a cambios!!!!!!!!
 data = {
     'Tarea': [
-        'Documentación e investigación',
         'Decisión del tema y herramientas',
+        'Documentación e investigación',
         'Planificación detallada',
         'Primeras pruebas y ajustes',
         'Desarrollo del sistema de control difuso',
@@ -20,23 +20,23 @@ data = {
     ],
     'Inicio': [
         '2024-09-23', 
-        '2024-09-30', 
-        '2024-10-07', 
-        '2024-10-14', 
-        '2024-10-21', 
+        '2024-09-23', 
+        '2024-10-02', 
+        '2024-10-02', 
+        '2024-10-16', # sit control
         '2024-10-28', 
-        '2024-11-04', 
-        '2024-11-13', 
-        '2024-11-20', 
-        '2024-11-27', 
-        '2024-12-09'
+        '2024-11-03', 
+        '2024-11-12', 
+        '2024-11-19', 
+        '2024-11-26', 
+        '2024-12-08'
     ],
     'Fin': [
-        '2024-09-29', 
-        '2024-10-06', 
-        '2024-10-13', 
-        '2024-10-20', 
+        '2024-10-02', 
         '2024-10-27', 
+        '2024-10-09', 
+        '2024-10-23', 
+        '2024-11-19', # sit control
         '2024-11-03', 
         '2024-11-12', 
         '2024-11-19', 
@@ -58,16 +58,19 @@ fig, ax = plt.subplots(figsize=(10, 6))
 
 # barras
 for idx, row in df.iterrows():
-    ax.barh(row['Tarea'], (row['Fin'] - row['Inicio']).days, left=row['Inicio'], height=0.5, align='center')
+    ax.barh(row['Tarea'], (row['Fin'] - row['Inicio']).days, left=row['Inicio'], height=0.9, align='center')
 
-ax.xaxis.set_major_locator(mdates.WeekdayLocator(interval=1)) # esto hay q hacerlo para las fechas
+ax.xaxis.set_major_locator(mdates.DayLocator(interval=3)) # esto hay q hacerlo para las fechas
+
 ax.xaxis.set_major_formatter(DateFormatter("%d-%b"))
+
 
 
 ax.set_yticks(range(len(df)))
 ax.set_yticklabels(df['Tarea'])
 ax.set_xlabel('Fecha')
 ax.set_title('Planificación del Proyecto - Diagrama de Gantt')
+ax.grid(True, axis='x', linestyle='--')
 
 plt.xticks(rotation=45)
 plt.tight_layout()

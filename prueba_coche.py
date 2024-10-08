@@ -1,38 +1,43 @@
-import pygame
+import pygame as pg 
 import random
 
-# Initialize Pygame
-pygame.init()
+# Initialize pg
+pg.init()
 
 # Constants
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
-CAR_WIDTH = 70
-CAR_HEIGHT = 80
-OBSTACLE_WIDTH = 50
-OBSTACLE_HEIGHT = 100
+CAR_WIDTH = 75
+CAR_HEIGHT = 85
+OBSTACLE_WIDTH = 60
+OBSTACLE_HEIGHT = 80
 ROAD_WIDTH = 400
-FPS = 30  # Reduced frame rate
+FPS = 40  # Reduced frame rate
 
 # Colors
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 GRAY = (200, 200, 200)
+DARK_GRAY = (40, 40, 40)
 RED = (255, 0, 0)
 GREEN = (0, 255, 0)
 BLUE = (0, 0, 255)
+YELLOW = (130, 130, 0)
 
 # Load images
-car_img = pygame.image.load('imgs/car.png')
-car_img = pygame.transform.scale(car_img, (CAR_WIDTH, CAR_HEIGHT))
+car_img = pg.image.load('imgs/car.png')
+car_img = pg.transform.scale(car_img, (CAR_WIDTH, CAR_HEIGHT))
+
+obstacle_img = pg.image.load('imgs/granny.png')
+obstacle_img = pg.transform.scale(obstacle_img, (OBSTACLE_WIDTH, OBSTACLE_HEIGHT))
 
 # Set up the display
-screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-pygame.display.set_caption("Simulador de Control de coche con lógica difusa")
+screen = pg.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+pg.display.set_caption("Simulador de Control de coche con lógica difusa")
 
 # Font for score
-font = pygame.font.Font(None, 36)
-distance_font = pygame.font.SysFont(None, 20)
+font = pg.font.Font(None, 36)
+distance_font = pg.font.SysFont(None, 20)
 
 # Car class
 
@@ -42,7 +47,8 @@ class Car:
         self.image = car_img
         self.x = (SCREEN_WIDTH - CAR_WIDTH) // 2
         self.y = SCREEN_HEIGHT - CAR_HEIGHT - 10
-        self.speed = 25
+        self.speed = FPS//(FPS*0.04)
+        print(self.speed)
 
     def move_left(self):
         if self.x > (SCREEN_WIDTH - ROAD_WIDTH) // 2:
@@ -55,7 +61,7 @@ class Car:
     def draw(self, screen):
         screen.blit(self.image, (self.x, self.y))
 
-# TODO pasar distancia de pygame a metros
+# TODO pasar distancia de pg a metros
 # TODO crear sensores para distancias de x_left y x_right
 # TODO crear una función de nearest_point? para que no vaya al centro, si no
 # al punto más cercano del obstáculo, como un sensor real...
@@ -72,14 +78,15 @@ class Car:
                 distances.append(distance_y_axis)
 
                 if visualize:
-                    pygame.draw.line(screen, GREEN,
+                    
+                    pg.draw.line(screen, GREEN,
                                     (self.x + CAR_WIDTH // 2, self.y),
                                     (obstacle.x + OBSTACLE_WIDTH // 2,
                                     obstacle.y + OBSTACLE_HEIGHT), 2)
-                    
                     text_surface = distance_font.render(
                         f'Y DIST: {distance_y_axis}', False, WHITE)
-                    screen.blit(text_surface, (obstacle.x, obstacle.y))
+                    screen.blit(text_surface, (
+                        obstacle.x + OBSTACLE_WIDTH, obstacle.y))
 
         return distances
 
@@ -88,20 +95,25 @@ class Car:
 
 class Obstacle:
     def __init__(self):
+        self.image = obstacle_img
         self.width = OBSTACLE_WIDTH
         self.height = OBSTACLE_HEIGHT
         self.x = random.randint(
             (SCREEN_WIDTH - ROAD_WIDTH) // 2, 
             (SCREEN_WIDTH + ROAD_WIDTH) // 2 - CAR_WIDTH)
         self.y = -self.height
-        self.speed = 10  # Adjusted speed
+        self.speed = FPS//(FPS*0.1) # Adjusted speed
+        print(self.speed)
 
     def move(self):
         self.y += self.speed
 
     def draw(self, screen):
-        pygame.draw.rect(
-            screen, RED, (self.x, self.y, self.width, self.height))
+        if self.image is None:
+            pg.draw.rect(
+                screen, RED, (self.x, self.y, self.width, self.height))
+        else:
+            screen.blit(self.image, (self.x, self.y))
 
     def is_off_screen(self):
         return self.y > SCREEN_HEIGHT
@@ -115,10 +127,10 @@ class Obstacle:
 def moveInTimeIntervals(car, time_offset, start_time, last_time):
     
     if time_offset:
-            last_time = (pygame.time.get_ticks() - start_time) / 1000
+            last_time = (pg.time.get_ticks() - start_time) / 1000
             time_offset = False
 
-    now = (pygame.time.get_ticks() - start_time) / 1000
+    now = (pg.time.get_ticks() - start_time) / 1000
 
     if (now) > (last_time + 0.007):
         # hace un random walk hacia los lados cada 0.007ms
@@ -138,10 +150,10 @@ def moveInTimeIntervals(car, time_offset, start_time, last_time):
 
 def manual_control(car):
     # legacy for manual car movement
-        keys = pygame.key.get_pressed()
-        if keys[pygame.K_LEFT]:
+        keys = pg.key.get_pressed()
+        if keys[pg.K_LEFT]:
             car.move_left()
-        if keys[pygame.K_RIGHT]:
+        if keys[pg.K_RIGHT]:
             car.move_right()
 
 def spawn_despawn_obstacles(obstacles, score):
@@ -168,6 +180,31 @@ def obstacle_collisions(obstacles, car):
             return True  # para running = False
         else:
             return False
+        
+def draw_road():
+    draw_coords = (SCREEN_WIDTH - ROAD_WIDTH)
+    line_width = ROAD_WIDTH //40
+    line_separation = 50
+    line_height = SCREEN_HEIGHT//30
+
+    # asphalt
+    pg.draw.rect(
+        screen, DARK_GRAY, (draw_coords // 2, 0, ROAD_WIDTH, SCREEN_HEIGHT))
+
+    #center
+    pg.draw.rect(
+        screen, YELLOW, (draw_coords, 0, line_width, SCREEN_HEIGHT))
+    # right line
+    pg.draw.rect(
+        screen, YELLOW, ((draw_coords//2)+10, 0, line_width, SCREEN_HEIGHT))
+    #left line
+    pg.draw.rect(
+        screen, YELLOW, ((draw_coords//2)+(ROAD_WIDTH-20), 0, line_width, SCREEN_HEIGHT))
+    # false discontinuous line
+    
+    for i in range(-10, SCREEN_HEIGHT, line_separation):
+        pg.draw.rect(screen, DARK_GRAY, 
+            (draw_coords, i, line_width, line_height))
 
 # TODO sensor debe tener un arco de acción
 # TODO programar más sensores
@@ -179,32 +216,32 @@ def game_loop():
     car = Car()
     obstacles = []
     score = 0
-    clock = pygame.time.Clock()
+    clock = pg.time.Clock()
     running = True
-    start_time = pygame.time.get_ticks()
+    start_time = pg.time.get_ticks()
     last_time = start_time
 
     # New variables
     time_offset = True
 
     while running:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
+        for event in pg.event.get():
+            if event.type == pg.QUIT:
                 running = False
 
         last_time, time_offset = moveInTimeIntervals(
             car, time_offset, start_time, last_time)
 
         screen.fill(GRAY)
-        pygame.draw.rect(
-            screen, BLACK, ((SCREEN_WIDTH - ROAD_WIDTH) // 2, 0, ROAD_WIDTH, SCREEN_HEIGHT))
+        
+        draw_road()
 
         car.draw(screen)
 
         score = spawn_despawn_obstacles(obstacles, score)
         collision = obstacle_collisions(obstacles, car)
         if collision:
-            pass#running = False
+            running = False
 
 
         # "linea" del sensor, el orden de dibujo importa
@@ -213,24 +250,28 @@ def game_loop():
         score_text = font.render(f"Score: {score}", True, BLACK)
         screen.blit(score_text, (10, 10))
 
-        pygame.display.flip()
+        pg.display.flip()
         clock.tick(FPS)
+
+    death_text = font.render(f"Abuelita atropellada!!", True, WHITE)
+    screen.blit(death_text, (SCREEN_WIDTH //
+                2 - 100, SCREEN_HEIGHT // 2 - 100))
 
     final_score_text = font.render(f"Final Score: {score}", True, WHITE)
     screen.blit(final_score_text, (SCREEN_WIDTH //
                 2 - 100, SCREEN_HEIGHT // 2 - 50))
 
     # Calculate and display play time
-    elapsed_time = (pygame.time.get_ticks() - start_time) // 1000  # in seconds
+    elapsed_time = (pg.time.get_ticks() - start_time) // 1000  # in seconds
     time_text = font.render(f"Time: {elapsed_time} seconds", True, WHITE)
     screen.blit(time_text, (SCREEN_WIDTH // 2 - 100, SCREEN_HEIGHT // 2))
 
-    pygame.display.flip()
-    pygame.time.wait(1000)  # Display final screen for 5 seconds
+    pg.display.flip()
+    pg.time.wait(1000)  # Display final screen for 5 seconds
 
-    pygame.quit()
+    pg.quit()
 
-    pygame.quit()
+    pg.quit()
 
 
 if __name__ == "__main__":
