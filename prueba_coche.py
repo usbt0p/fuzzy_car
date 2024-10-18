@@ -12,7 +12,7 @@ CAR_HEIGHT = 85
 OBSTACLE_WIDTH = 60
 OBSTACLE_HEIGHT = 80
 ROAD_WIDTH = 400
-FPS = 40  # Reduced frame rate
+FPS = 30  # Reduced frame rate
 
 # Colors
 WHITE = (255, 255, 255)
@@ -25,7 +25,7 @@ BLUE = (0, 0, 255)
 YELLOW = (130, 130, 0)
 
 # Load images
-car_img = pg.image.load('imgs/car.png')
+car_img = pg.image.load('imgs/coche_blanco.png')
 car_img = pg.transform.scale(car_img, (CAR_WIDTH, CAR_HEIGHT))
 
 obstacle_img = pg.image.load('imgs/granny.png')
@@ -62,14 +62,12 @@ class Car:
         screen.blit(self.image, (self.x, self.y))
 
 # TODO pasar distancia de pg a metros
-# TODO crear sensores para distancias de x_left y x_right
 # TODO crear una función de nearest_point? para que no vaya al centro, si no
 # al punto más cercano del obstáculo, como un sensor real...
-# TODO velocidad depende de fps, ajustar para que sea escalado
 
 
     def obstacle_sensor_y_axis(self, obstacles, visualize=True):
-        distances = []
+        distances = [] # una lista ya que podría querer computarlo para mas de un obstáculo
 
         for obstacle in obstacles:
             if self.y > obstacle.y + OBSTACLE_HEIGHT: # para sensor cuando esté detrás del coche
@@ -79,7 +77,13 @@ class Car:
 
                 if visualize:
                     
+                    # TODO hacer dotted line??
                     pg.draw.line(screen, GREEN,
+                                    (self.x + CAR_WIDTH // 2, self.y),
+                                    (self.x + CAR_WIDTH // 2,
+                                    obstacle.y + OBSTACLE_HEIGHT), 2)
+                    
+                    pg.draw.line(screen, (255,255,0),
                                     (self.x + CAR_WIDTH // 2, self.y),
                                     (obstacle.x + OBSTACLE_WIDTH // 2,
                                     obstacle.y + OBSTACLE_HEIGHT), 2)
@@ -90,12 +94,56 @@ class Car:
 
         return distances
 
+    def obstacle_sensor_right(self, obstacles, visualize=True):
+        distances = [] 
+        frente_coche = self.x + CAR_WIDTH//2
+
+        for obstacle in obstacles:
+            # esto es el medio del coche
+            if frente_coche > obstacle.front_x_coords : 
+                distance_right = frente_coche - obstacle.front_x_coords
+                distances.append(distance_right)
+
+                if visualize:
+                    pg.draw.line(screen, RED,
+                                    (frente_coche, self.y),
+                                    (obstacle.front_x_coords,
+                                    self.y), 2)
+                    text_surface = distance_font.render(
+                        f'RIGHT DIST: {distance_right}', False, WHITE)
+                    screen.blit(text_surface, (
+                        obstacle.x + OBSTACLE_WIDTH, obstacle.y + 20))
+
+        return distances
+    
+    def obstacle_sensor_left(self, obstacles, visualize=True):
+        distances = [] 
+        frente_coche = self.x + CAR_WIDTH//2
+
+        for obstacle in obstacles:
+            # esto es el medio del coche
+            if frente_coche < obstacle.front_x_coords : 
+                distance_left = frente_coche - obstacle.front_x_coords
+                distances.append(distance_left)
+
+                if visualize:
+                    pg.draw.line(screen, BLUE,
+                                    (frente_coche, self.y),
+                                    (obstacle.front_x_coords,
+                                    self.y), 2)
+                    text_surface = distance_font.render(
+                        f'LEFT DIST: {distance_left}', False, WHITE)
+                    screen.blit(text_surface, (
+                        obstacle.x + OBSTACLE_WIDTH, obstacle.y + 40))
+
+        return distances
+
 # Obstacle class
 
 
 class Obstacle:
     def __init__(self):
-        self.image = obstacle_img
+        self.image = None
         self.width = OBSTACLE_WIDTH
         self.height = OBSTACLE_HEIGHT
         self.x = random.randint(
@@ -103,6 +151,7 @@ class Obstacle:
             (SCREEN_WIDTH + ROAD_WIDTH) // 2 - CAR_WIDTH)
         self.y = -self.height
         self.speed = FPS//(FPS*0.1) # Adjusted speed
+        self.front_x_coords = self.x + OBSTACLE_WIDTH//2
         print(self.speed)
 
     def move(self):
@@ -246,6 +295,8 @@ def game_loop():
 
         # "linea" del sensor, el orden de dibujo importa
         car.obstacle_sensor_y_axis(obstacles)
+        car.obstacle_sensor_right(obstacles)
+        car.obstacle_sensor_left(obstacles)
 
         score_text = font.render(f"Score: {score}", True, BLACK)
         screen.blit(score_text, (10, 10))
@@ -267,7 +318,7 @@ def game_loop():
     screen.blit(time_text, (SCREEN_WIDTH // 2 - 100, SCREEN_HEIGHT // 2))
 
     pg.display.flip()
-    pg.time.wait(1000)  # Display final screen for 5 seconds
+    pg.time.wait(1000)  # Display final screen for 1 seconds
 
     pg.quit()
 
