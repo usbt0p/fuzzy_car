@@ -1,11 +1,10 @@
 # Personal ignores
 car.zip
-img/car.png
+imgs/car.png
 docs/*
-docs/diagrama_gantt.py
+!docs/clase3.drawio.png
+!docs/basico.drawio.png
 stats.py
-entornoEntidades
-
 
 # Copied from https://github.com/github/gitignore/blob/main/Python.gitignore
 # Byte-compiled / optimized / DLL files
