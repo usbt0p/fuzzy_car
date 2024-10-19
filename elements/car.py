@@ -1,9 +1,9 @@
-from .entidad import Entidad
-from .entorno import Constants as const
-from sensores import Sensores
+from .entity import Entity
+from .environment import Constants as const
+from sensors import Sensors
 
 
-class Coche(Entidad, Sensores):
+class Car(Entity, Sensors):
     def __init__(self, image, dims, coords, speed):
         super().__init__(image, dims, coords, speed)
         self.front_x_coords = self.x + self.width//2
@@ -24,7 +24,7 @@ class Coche(Entidad, Sensores):
 
 
 if __name__ == '__main__':
-    car = Coche(None, (50, 100), (200, 200), 20)
+    car = Car(None, (50, 100), (200, 200), 20)
     print(car.__dict__)
     # print(dir(car))
     method_list = [

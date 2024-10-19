@@ -1,8 +1,5 @@
-from entornoEntidades.entorno import Colors as clrs
-import pygame as pg
 
-
-class Sensores:
+class Sensors:
 
     def obstacle_sensor_y_axis(self, obstacles):
         distances = []  # una lista ya que podría querer computarlo para mas de un obstáculo

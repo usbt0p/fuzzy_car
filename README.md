@@ -45,7 +45,7 @@ The project is structured into several modules. Here is a basic explanation, and
 
 ![alt text](docs/basico.drawio.png)
 
-<img src="docs/clase3.drawio.png" width="500">
+<img src="docs/clase3.drawio.png" width="600">
 </img>
 
 
@@ -119,12 +119,13 @@ Enjoy the simulation and happy coding!
 <a name="headers"/>
 
 ## References
+
 </a>
 
 [Cool markdown guide for readme's](https://github.com/adam-p/markdown-here/wiki/Markdown-Here-Cheatsheet#code) plus [creating markdown table of contents](https://stackoverflow.com/a/18244520).
 
 Things I learned while doing this project:
-- [Circular imports](https://rollbar.com/blog/how-to-fix-circular-import-in-python/#) are a problem in Python. Didn't come across them until now. Makes sense given how it does module search an cytecode compilation.
+- [Circular imports](https://rollbar.com/blog/how-to-fix-circular-import-in-python/#) are a problem in Python. Didn't come across them until now. Makes sense given how it does module search an bytecode compilation.
 - Git things like [removing tracked files](https://stackoverflow.com/questions/45400361/why-is-gitignore-not-ignoring-my-files) and [gitignore exclusions from wildcards](https://stackoverflow.com/questions/5533050/gitignore-exclude-folder-but-include-specific-subfolder).
 
 

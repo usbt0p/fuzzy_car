@@ -28,7 +28,7 @@ class Colors:
     DARK_YELLOW = (130, 130, 0)
 
 
-class Entorno:
+class Environment:
     def __init__(self, constants: Constants, colors: Colors):
         self.const = constants
         self.colors = colors
@@ -68,7 +68,7 @@ class Entorno:
         # obscatulo.py calls from .entorno import Constants as const
         # entorno.py calls from entornoEntidades.obstaculo import Obstaculo
         # therefore one must call the other, cycle in dependency tree leads to error
-        from entornoEntidades.obstaculo import Obstaculo
+        from .obstacle import Obstacle
 
         """if random.randint(1, 50) == 1:  # Adjusted obstacle frequency
             obstacles.append(Obstacle())"""
@@ -80,7 +80,7 @@ class Entorno:
                 (Constants.SCREEN_WIDTH - Constants.ROAD_WIDTH) // 2,
                 (Constants.SCREEN_WIDTH + Constants.ROAD_WIDTH) // 2 - Constants.OBSTACLE_WIDTH)
 
-            obs = Obstaculo(img,
+            obs = Obstacle(img,
                             (Constants.OBSTACLE_WIDTH, Constants.OBSTACLE_HEIGHT),
                             (rand_x, -Constants.OBSTACLE_HEIGHT), 10)
 
@@ -102,6 +102,6 @@ class Entorno:
 
 
 if __name__ == '__main__':
-    e = Entorno(Constants, Colors)
+    e = Environment(Constants, Colors)
     print(e.const.FPS)
     print(e.colors.BLACK)

@@ -1,6 +1,6 @@
 import pygame as pg
-from entornoEntidades.entorno import Colors as clrs
-from entornoEntidades.entorno import Constants as const
+from elements.environment import Colors as clrs
+from elements.environment import Constants as const
 
 pg.font.init()
 

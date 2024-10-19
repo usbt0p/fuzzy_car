@@ -1,9 +1,9 @@
 import pygame as pg
-from entornoEntidades.coche import Coche
+from elements.car import Car
 import monitor
-from entornoEntidades.entorno import Constants as const
-from entornoEntidades.entorno import Colors as clrs
-from entornoEntidades.entorno import Entorno
+from elements.environment import Constants as const
+from elements.environment import Colors as clrs
+from elements.environment import Environment
 from monitor import car_img, obstacle_img
 
 
@@ -21,7 +21,7 @@ def simulate():
     # initialize car position and car object
     car_x = (const.SCREEN_WIDTH - const.CAR_WIDTH) // 2
     car_y = const.SCREEN_HEIGHT - const.CAR_HEIGHT - 10
-    car = Coche(car_img, (const.CAR_WIDTH, const.CAR_HEIGHT),
+    car = Car(car_img, (const.CAR_WIDTH, const.CAR_HEIGHT),
                 (car_x, car_y), 25)
 
     # decalre list(Obstacle()) and simulation constants
@@ -42,17 +42,17 @@ def simulate():
         screen.fill(clrs.GRAY)
         monitor.draw_road(screen)
 
-        last_time, time_offset = Entorno.moveInTimeIntervals(
+        last_time, time_offset = Environment.moveInTimeIntervals(
             car, time_offset, start_time, last_time)
         car.draw(screen)
 
-        score = Entorno.spawn_despawn_obstacles(
+        score = Environment.spawn_despawn_obstacles(
             obstacles, obstacle_img, score)
         # simulation can theoretically handle several objects at once
         for obstacle in obstacles:
             obstacle.draw(screen)
 
-        collision = Entorno.obstacle_collisions(obstacles, car)
+        collision = Environment.obstacle_collisions(obstacles, car)
         if collision:
             running = False
 

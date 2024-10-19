@@ -1,8 +1,8 @@
-from .entorno import Colors as clrs
+from .environment import Colors as clrs
 import pygame as pg
 
 
-class Entidad:
+class Entity:
     def __init__(self, image, dims, coords, speed):
         self.image = image
         self.width = dims[0]

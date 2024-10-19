@@ -1,8 +1,8 @@
-from .entorno import Constants as const
-from .entidad import Entidad
+from .environment import Constants as const
+from .entity import Entity
 
 
-class Obstaculo(Entidad):
+class Obstacle(Entity):
     def __init__(self, image, dims, coords, speed):
         super().__init__(image, dims, coords, speed)
         self.front_x_coords = self.x + self.width // 2
