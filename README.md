@@ -67,7 +67,13 @@ To run the Fuzzy Car Simulator, you need to have Python installed on your system
     cd fuzzy_car
     ```
 
-2. **Install the required dependencies**:
+2. **Install the required dependencies on a virtual environment**:
+    You should create a virtual environment to install the dependencies. This is good practice to avoid conflicts with other projects:
+    ```sh	
+    python -m venv venv
+    source venv/bin/activate
+    ```
+    And then just install them:
     ```sh
     pip install -r requirements.txt
     ```

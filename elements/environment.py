@@ -69,10 +69,19 @@ class Environment:
         # entorno.py calls from entornoEntidades.obstaculo import Obstaculo
         # therefore one must call the other, cycle in dependency tree leads to error
         from .obstacle import Obstacle
+        
+        # TODO test
+        '''rand_x = randint(
+                (Constants.SCREEN_WIDTH - Constants.ROAD_WIDTH) // 2,
+                (Constants.SCREEN_WIDTH + Constants.ROAD_WIDTH) // 2 - Constants.OBSTACLE_WIDTH)
+        
+        if randint(1, 50) == 1:  # Adjusted obstacle frequency
+            obstacles.append(Obstacle(img,
+                           (Constants.OBSTACLE_WIDTH, Constants.OBSTACLE_HEIGHT),
+                           (rand_x, -Constants.OBSTACLE_HEIGHT), 10))'''
 
-        """if random.randint(1, 50) == 1:  # Adjusted obstacle frequency
-            obstacles.append(Obstacle())"""
-
+        
+        # TODO test
         # make them appear only one at a time constantly
         if not obstacles:
 
@@ -81,18 +90,19 @@ class Environment:
                 (Constants.SCREEN_WIDTH + Constants.ROAD_WIDTH) // 2 - Constants.OBSTACLE_WIDTH)
 
             obs = Obstacle(img,
-                            (Constants.OBSTACLE_WIDTH, Constants.OBSTACLE_HEIGHT),
-                            (rand_x, -Constants.OBSTACLE_HEIGHT), 10)
+                           (Constants.OBSTACLE_WIDTH, Constants.OBSTACLE_HEIGHT),
+                           (rand_x, -Constants.OBSTACLE_HEIGHT), 10)
 
             obstacles.append(obs)
 
         for obstacle in obstacles[:]:
-            obstacle.move() # we don't draw here, not the job of entorno.py
+            obstacle.move()  # we don't draw here, not the job of entorno.py
             if obstacle.is_off_screen():
                 obstacles.remove(obstacle)
                 score += 1
         return score
 
+    # TODO test
     def obstacle_collisions(obstacles, car):
         for obstacle in obstacles:
             if obstacle.check_collision(car):
@@ -102,6 +112,7 @@ class Environment:
 
 
 if __name__ == '__main__':
+    # TODO test
     e = Environment(Constants, Colors)
     print(e.const.FPS)
     print(e.colors.BLACK)
