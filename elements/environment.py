@@ -1,5 +1,5 @@
 import pygame as pg
-from random import getrandbits, randint
+from random import randint
 
 
 class Constants:
@@ -42,18 +42,13 @@ class Environment:
         now = (pg.time.get_ticks() - start_time) / 1000
 
         if (now) > (last_time + 0.01):
-            # hace un random walk hacia los lados cada 0.007ms
-            # si se cambia la resolucion en now y last time se mueve mas fluido
+            #car.random_walk()
 
-            direction = bool(getrandbits(1))
-            if direction:
-                car.move_left()
-            else:
-                car.move_right()
 
             time_offset = True
 
         return last_time, time_offset
+    
 
     def manual_control(car):
         # legacy for manual car movement

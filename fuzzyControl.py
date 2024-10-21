@@ -4,6 +4,8 @@ import matplotlib.pyplot as plt
 import networkx as nx
 import random
 
+
+
 # define our universes
 road_width = np.arange(0, 11, 1)
 road_length = np.arange(0, 26, 1)
@@ -140,24 +142,30 @@ for i, d_sides in enumerate(dist):
 #nx.draw(rules[0].graph)  # FIXME hacer que se plotee solo y bien
 # https://networkx.org/documentation/stable/reference/drawing.html
 
-print(len(rules), rules)
+#print(len(rules), rules)
 steering_ctrl = ctrl.ControlSystem(rules)
 steering_ctrl_simul = ctrl.ControlSystemSimulation(steering_ctrl)
 
 # Pass inputs to the ControlSystem using Antecedent labels
 # Note: if you like passing many inputs all at once, use .inputs(dict_of_data)
-steering_ctrl_simul.input['distance_left'] = 7
+'''steering_ctrl_simul.input['distance_left'] = 7
 steering_ctrl_simul.input['distance_right'] = 6
-steering_ctrl_simul.input['distance_front'] = 12
+steering_ctrl_simul.input['distance_front'] = 12'''
 
-# Crunch the numbers
-steering_ctrl_simul.compute()
+def control_movement(sensor_y, sensor_left, sensor_right):
 
-# steering_ctrl_simul.print_state()
+   steering_ctrl_simul.input['distance_left'] = sensor_left
+   steering_ctrl_simul.input['distance_right'] = sensor_right
+   steering_ctrl_simul.input['distance_front'] = sensor_y
+   # Crunch the numbers
+   steering_ctrl_simul.compute()
 
-output = steering_ctrl_simul.output['steering']
-print(output)
-print()
+   # steering_ctrl_simul.print_state()
+   output = steering_ctrl_simul.output['steering']
+   print(output)
+   print()
+
+   return output
 #steering.view(sim=steering_ctrl_simul)
 
 

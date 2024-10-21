@@ -7,6 +7,7 @@ from elements.environment import Environment
 from monitor import car_img, obstacle_img
 
 
+
 # Initialize pg
 pg.init()
 
@@ -42,8 +43,27 @@ def simulate():
         screen.fill(clrs.GRAY)
         monitor.draw_road(screen)
 
-        last_time, time_offset = Environment.moveInTimeIntervals(
-            car, time_offset, start_time, last_time)
+        # activate sensors and draw them on the screen
+        d_y = car.obstacle_sensor_y_axis(obstacles)
+        d_x_r = car.obstacle_sensor_right(obstacles)
+        d_x_l = car.obstacle_sensor_left(obstacles)
+
+        '''last_time, time_offset = Environment.moveInTimeIntervals(
+            car, time_offset, start_time, last_time)'''
+        
+        if time_offset:
+            last_time = (pg.time.get_ticks() - start_time) / 1000
+            time_offset = False
+
+        now = (pg.time.get_ticks() - start_time) / 1000
+
+        if (now) > (last_time + 0.01):
+            #car.random_walk()
+
+            car.controller(d_y, d_x_r, d_x_l)
+
+            time_offset = True
+        
         car.draw(screen)
 
         score = Environment.spawn_despawn_obstacles(
@@ -52,19 +72,14 @@ def simulate():
         for obstacle in obstacles:
             obstacle.draw(screen)
 
-        collision = Environment.obstacle_collisions(obstacles, car)
-        if collision:
-            running = False
-
-        # activate sensors and draw them on the screen
-        d_y = car.obstacle_sensor_y_axis(obstacles)
-        d_x_r = car.obstacle_sensor_right(obstacles)
-        d_x_l = car.obstacle_sensor_left(obstacles)
-
         for obstacle, d_y, d_x_r, d_x_l in zip(obstacles, d_y, d_x_r, d_x_l):
             monitor.draw_y_sensor(screen, car, obstacle, d_y)
             monitor.draw_right_sensor(screen, car, obstacle, d_x_r)
             monitor.draw_left_sensor(screen, car, obstacle, d_x_l)
+
+        collision = Environment.obstacle_collisions(obstacles, car)
+        if collision:
+            pass#running = False
 
         monitor.display_monitor_text(screen, score)
 
