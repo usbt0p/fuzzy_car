@@ -1,183 +1,192 @@
-"""
-==========================================
-Fuzzy Control Systems: The Tipping Problem
-==========================================
-
-The 'tipping problem' is commonly used to illustrate the power of fuzzy logic
-principles to generate complex behavior from a compact, intuitive set of
-expert rules.
-
-If you're new to the world of fuzzy control systems, you might want
-to check out the `Fuzzy Control Primer
-<../userguide/fuzzy_control_primer.html>`_
-before reading through this worked example.
-
-The Tipping Problem
--------------------
-
-Let's create a fuzzy control system which models how you might choose to tip
-at a restaurant.  When tipping, you consider the service and food quality,
-rated between 0 and 10.  You use this to leave a tip of between 0 and 25%.
-
-We would formulate this problem as:
-
-* Antecednets (Inputs)
-   - `service`
-      * Universe (ie, crisp value range): How good was the service of the wait
-        staff, on a scale of 0 to 10?
-      * Fuzzy set (ie, fuzzy value range): poor, acceptable, amazing
-   - `food quality`
-      * Universe: How tasty was the food, on a scale of 0 to 10?
-      * Fuzzy set: bad, decent, great
-* Consequents (Outputs)
-   - `tip`
-      * Universe: How much should we tip, on a scale of 0% to 25%
-      * Fuzzy set: low, medium, high
-* Rules
-   - IF the *service* was good  *or* the *food quality* was good,
-     THEN the tip will be high.
-   - IF the *service* was average, THEN the tip will be medium.
-   - IF the *service* was poor *and* the *food quality* was poor
-     THEN the tip will be low.
-* Usage
-   - If I tell this controller that I rated:
-      * the service as 9.8, and
-      * the quality as 6.5,
-   - it would recommend I leave:
-      * a 20.2% tip.
-
-
-Creating the Tipping Controller Using the skfuzzy control API
--------------------------------------------------------------
-
-We can use the `skfuzzy` control system API to model this.  First, let's
-define fuzzy variables
-"""
 import numpy as np
-import skfuzzy as fuzz
 from skfuzzy import control as ctrl
 import matplotlib.pyplot as plt
+import networkx as nx
+import random
 
-# New Antecedent/Consequent objects hold universe variables and membership
-# functions
-quality = ctrl.Antecedent(np.arange(0, 11, 1), 'quality')
-service = ctrl.Antecedent(np.arange(0, 11, 1), 'service')
-tip = ctrl.Consequent(np.arange(0, 26, 1), 'tip')
+# define our universes
+road_width = np.arange(0, 11, 1)
+road_length = np.arange(0, 26, 1)
+
+# Antecedent/Consequent objects hold universe variables and membership functions
+# TODO no hay variables de velocidad: incorporar a futuro
+distance_right = ctrl.Antecedent(road_width, 'distance_right')
+distance_left = ctrl.Antecedent(road_width, 'distance_left')
+distance_front = ctrl.Antecedent(road_length, 'distance_front')
+
+steering = ctrl.Consequent(np.arange(-25, 26, 1),
+                           'steering', defuzzify_method='mom')
+
+print(steering.defuzzify_method)  # método por defecto de defuzz
+# https://pythonhosted.org/scikit-fuzzy/api/skfuzzy.defuzzify.html#defuzz
+'''Controls which defuzzification method will be used. 
+* 'centroid': Centroid of area 
+* 'bisector': bisector of area 
+* 'mom' : mean of maximum 
+* 'som' : min of maximum 
+* 'lom' : max of maximum'''
 
 # Auto-membership function population is possible with .automf(3, 5, or 7)
-quality.automf(3)
-service.automf(3)
+# we can pass our own names to the functions
 
-# Custom membership functions can be built interactively with a familiar,
-# Pythonic API
-tip['low'] = fuzz.trimf(tip.universe, [0, 0, 13])
-tip['medium'] = fuzz.trimf(tip.universe, [0, 13, 25])
-tip['high'] = fuzz.trimf(tip.universe, [13, 25, 25])
+steer = ['left++',
+         'left+',
+         'left',
+         'center',
+         'right',
+         'right+',
+         'right++']
 
-"""
-To help understand what the membership looks like, use the ``view`` methods.
-"""
+dist = ['low', 'medium', 'high']
+
+distance_front.automf(3, names=dist)
+distance_left.automf(3, names=dist)
+distance_right.automf(3, names=dist)
+steering.automf(7, names=steer)#, invert=True)
+
+# TODO definir mejor la granularidad de los conjuntos
+'''distance_right['low'] = fuzz.trimf(distance_right.universe, [0, 0, 5])
+distance_right['medium'] = fuzz.trimf(distance_right.universe, [0, 5, 10])
+distance_right['high'] = fuzz.trimf(distance_right.universe, [5, 10, 10])
+
+distance_left['low'] = fuzz.trimf(distance_left.universe, [0, 0, 5])
+distance_left['medium'] = fuzz.trimf(distance_left.universe, [0, 5, 10])
+distance_left['high'] = fuzz.trimf(distance_left.universe, [5, 10, 10])
+
+distance_front['low'] = fuzz.trimf(distance_front.universe, [0, 0, 13])
+distance_front['medium'] = fuzz.trimf(distance_front.universe, [0, 13, 25])
+distance_front['high'] = fuzz.trimf(distance_front.universe, [13, 25, 25])'''
+
+# TODO decidir bien el output de esta variable, cambiar nombres
+# plantearse si las funciones no deberían ser distintas en el sentido de;
+# quiero que el coche se mueva poco a poco al principio o que lo haga de una ya??
+'''steering['low'] = fuzz.trimf(steering.universe, [-10, -10, 0])
+steering['medium'] = fuzz.trimf(steering.universe, [-10, 0, 10])
+steering['high'] = fuzz.trimf(steering.universe, [0, 10, 10])'''
 
 # You can see how these look with .view()
-quality['average'].view()
-"""
-.. image:: PLOT2RST.current_figure
-"""
-service.view()
-#plt.show() # FIXME
-"""
-.. image:: PLOT2RST.current_figure
-"""
-tip.view()
-"""
-.. image:: PLOT2RST.current_figure
+'''distance_right['medium'].view()
+distance_left.view()
+distance_front.view()
+steering.view()
+plt.show()'''
 
-"""
+# TODO esto es lo que habrá que pensar mejor
 
+rules = []
 
-"""
-Fuzzy rules
------------
+for i, d_sides in enumerate(dist):  # crea las combinaciones de reglas
+    for j, d_front in enumerate(dist):
+        
+        turn = steer[j+i]
 
-Now, to make these triangles useful, we define the *fuzzy relationship*
-between input and output variables. For the purposes of our example, consider
-three simple rules:
+        if j == len(dist)-1 and i == len(dist)-1:
+            # para los 2 ultimos casos se queda en el medio
+            turn = steer[(len(steer)//2)]
+        # print(d_sides, d_front, turn)
+        rules.append(
+            ctrl.Rule(distance_right[d_sides] &
+                      distance_front[d_front], steering[turn])
+        )
 
-1. If the food is poor OR the service is poor, then the tip will be low
-2. If the service is average, then the tip will be medium
-3. If the food is good OR the service is good, then the tip will be high.
+# una disyunción de conjunciones
+# TODO habrá que usar regals OR, NOT y AND??
+# TODO SIMPLIFICAR?? :
+'''
+R(a) & F(a) -> 1
+R(a) & F(b) -> 2
+R(a) & F(c) -> 3
+R(b) & F(a) -> 2
+R(b) & F(b) -> 3
+R(b) & F(c) -> 4
+...
+Es equivalente a...
 
-Most people would agree on these rules, but the rules are fuzzy. Mapping the
-imprecise rules into a defined, actionable tip is a challenge. This is the
-kind of task at which fuzzy logic excels.
-"""
+R(a) & F(a) -> 1
+R(a) & F(b) | R(b) & F(a) -> 2
+R(a) & F(c) | R(b) & F(b)-> 3
+R(b) & F(c) -> 4
+...
 
-rule1 = ctrl.Rule(quality['poor'] | service['poor'], tip['low'])
-rule2 = ctrl.Rule(service['average'], tip['medium'])
-rule3 = ctrl.Rule(service['good'] | quality['good'], tip['high'])
+'''
+'''
+right1 = ctrl.Rule(distance_right['low'] & distance_front['low'], steering['left++'])
+right2 = ctrl.Rule(distance_right['low'] & distance_front['medium'], steering['left+'])
+right3 = ctrl.Rule(distance_right['low'] & distance_front['high'], steering['left'])
 
-#rule1.view() # FIXME no funciona la visualizacion de grafo
+right1 = ctrl.Rule(distance_right['medium'] & distance_front['low'], steering['left+'])
+right2 = ctrl.Rule(distance_right['medium'] & distance_front['medium'], steering['left'])
+right3 = ctrl.Rule(distance_right['medium'] & distance_front['high'], steering['center']) # TODO esta puede estar mal?
 
-"""
-.. image:: PLOT2RST.current_figure
-
-Control System Creation and Simulation
----------------------------------------
-
-Now that we have our rules defined, we can simply create a control system
-via:
-"""
-
-tipping_ctrl = ctrl.ControlSystem([rule1, rule2, rule3])
-
-"""
-In order to simulate this control system, we will create a
-``ControlSystemSimulation``.  Think of this object representing our controller
-applied to a specific set of cirucmstances.  For tipping, this might be tipping
-Sharon at the local brew-pub.  We would create another
-``ControlSystemSimulation`` when we're trying to apply our ``tipping_ctrl``
-for Travis at the cafe because the inputs would be different.
-"""
-
-tipping = ctrl.ControlSystemSimulation(tipping_ctrl)
+right1 = ctrl.Rule(distance_right['high'] & distance_front['low'], steering['left'])
+right2 = ctrl.Rule(distance_right['high'] & distance_front['medium'], steering['center'])
+right3 = ctrl.Rule(distance_right['high'] & distance_front['high'], steering['center'])
+'''
 
 
-"""
-We can now simulate our control system by simply specifying the inputs
-and calling the ``compute`` method.  Suppose we rated the quality 6.5 out of 10
-and the service 9.8 of 10.
-"""
-# Pass inputs to the ControlSystem using Antecedent labels with Pythonic API
+for i, d_sides in enumerate(dist):
+    for j, d_front in enumerate(dist):
+
+        turn = steer[-((i+j)+1)]  # reverse list indexing, start at the last one
+
+        if j == len(dist)-1 and i == len(dist)-1:
+            turn = steer[(len(steer)//2)]
+        #print(d_sides, d_front, turn)
+        rules.append(
+            ctrl.Rule(distance_left[d_sides] &
+                      distance_front[d_front], steering[turn])
+        )
+
+#nx.draw(rules[0].graph)  # FIXME hacer que se plotee solo y bien
+# https://networkx.org/documentation/stable/reference/drawing.html
+
+print(len(rules), rules)
+steering_ctrl = ctrl.ControlSystem(rules)
+steering_ctrl_simul = ctrl.ControlSystemSimulation(steering_ctrl)
+
+# Pass inputs to the ControlSystem using Antecedent labels
 # Note: if you like passing many inputs all at once, use .inputs(dict_of_data)
-tipping.input['quality'] = 6.5
-tipping.input['service'] = 9.8
+steering_ctrl_simul.input['distance_left'] = 7
+steering_ctrl_simul.input['distance_right'] = 6
+steering_ctrl_simul.input['distance_front'] = 12
 
 # Crunch the numbers
-tipping.compute()
+steering_ctrl_simul.compute()
 
-#tipping.print_state()
+# steering_ctrl_simul.print_state()
 
-"""
-Once computed, we can view the result as well as visualize it.
-"""
-print(tipping.output['tip'])
-tip.view(sim=tipping)
+output = steering_ctrl_simul.output['steering']
+print(output)
+print()
+#steering.view(sim=steering_ctrl_simul)
+
 
 #plt.show()
 
-"""
-.. image:: PLOT2RST.current_figure
 
-The resulting suggested tip is **20.24%**.
+if __name__ == '__main__':
+   numreps = 5
 
-Final thoughts
---------------
+   for _ in range(numreps):
+      x = bool(random.getrandbits(1))
+      if x:
+         L = random.randint(0,10)
+         R = 0
+      else:
+         R = random.randint(0,10)
+         L = 0
+      F = random.randint(0,25)
 
-The power of fuzzy systems is allowing complicated, intuitive behavior based
-on a sparse system of rules with minimal overhead. Note our membership
-function universes were coarse, only defined at the integers, but
-``fuzz.interp_membership`` allowed the effective resolution to increase on
-demand. This system can respond to arbitrarily small changes in inputs,
-and the processing burden is minimal.
+      steering_ctrl_simul.input['distance_left'] = L
+      steering_ctrl_simul.input['distance_right'] = R
+      steering_ctrl_simul.input['distance_front'] = F
 
-"""
+      steering_ctrl_simul.compute()
+
+      output = steering_ctrl_simul.output['steering']
+      print(output)
+      print()
+      steering.view(sim=steering_ctrl_simul)
+
+      plt.title(f'(L: {L}, R: {R}, F: {F}) -> Out: {output}')
+      plt.show()
