@@ -84,7 +84,7 @@ def draw_road(screen):
             (draw_coords//2)+(const.ROAD_WIDTH-20), 0, line_width, const.SCREEN_HEIGHT))
     
     # false discontinuous line
-    # TODO hacer que se mueva
+    # TODO hacer que se mueva la linea
     for i in range(-10, const.SCREEN_HEIGHT, line_separation):
         pg.draw.rect(screen, clrs.DARK_GRAY,
                      (const.SCREEN_WIDTH//2, i, line_width, line_height))

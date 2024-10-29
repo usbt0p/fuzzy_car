@@ -9,28 +9,16 @@ Welcome to the Fuzzy Car Simulator! This project simulates a car controlled by f
 2. [Basic Design](#basic-design)
 3. [Installation](#installation)
 4. [Usage](#usage)
-5. [License](#license) 
-6. [References](#references)
+5. [TODO's](#todos)
+6. [License](#license) 
+7. [References](#references)
    
 <a name="headers"/>
 
 ## State
 </a>
 
-> Still in development!!! Basic structure is done, fuzzy control on the way.
-
-## TODO's
-- [ ] Make car change angle when turning
-- [ ] Make road lines move for a more dynamic environment
-- [x] Fix bad road drawing when resizing window 
-- [ ] Update documentation with latest changes
-- [ ] Document problems: 
-    - rules are hard to tame: separated right from left, order matters
-    - more variables than initially expected (return to center, etc.)
-    - choosing the right membership functions depends on the desired behavior
-    - choosing the rules is a bit of a trial and error process, and changes with the MFs
-    - fix moving too soon and moving when not needed (dist_x big or dist_y big)
-- [ ] Write unit tests 
+> Still in development! For now, this is a functioning prototype.
 
 <a name="headers"/>
 
@@ -39,6 +27,9 @@ Welcome to the Fuzzy Car Simulator! This project simulates a car controlled by f
 </a>
 
 The Fuzzy Car Simulator is a Python-based project that uses fuzzy logic to control a car's movement. The car navigates through a simulated environment, avoiding obstacles and responding to sensor inputs. The project leverages the `pygame` library for the simulation and `scikit-fuzzy` for fuzzy logic control.
+
+<img src="docs/simulator_thumbnail.png" width="500">
+</img>
 
 <a name="headers"/>
 
@@ -60,10 +51,6 @@ The project is structured into several modules. Here is a basic explanation, and
 
 <img src="docs/clase3.drawio.png" width="600">
 </img>
-
-
-
-
 
 
 <a name="headers"/>
@@ -125,6 +112,32 @@ To start the simulation, run the `main.py` file:
 ```sh
 python main.py
 ```
+<a name="headers"/>
+
+## TODO's
+
+</a>
+
+- [ ] Make car change angle when turning
+- [ ] Add image to readme
+- [ ] Randomize obstacle images
+- [ ] Make road lines move for a more dynamic environment
+- [ ] Adjust spawn rate of obstacles and prevent impossible spawns and blockages
+- [ ] Adjust controller: too many obstacles on one side overpower one very close on the other
+- [ ] Adjust defuzz method an possibly some membership functions (change to trapezoidal, move fuzzy numbers)
+- [x] Fix bad road drawing when resizing window 
+- [ ] Update documentation with latest changes
+- [ ] Document problems: 
+    - rules are hard to tame: separated right from left, order matters
+    - more variables than initially expected (return to center, etc.)
+    - choosing the right membership functions depends on the desired behavior
+    - choosing the rules is a bit of a trial and error process, and changes with the MFs
+    - fix moving too soon and moving when not needed (dist_x big or dist_y big)
+    - sometimes, less rules is better. To remove the issue where the car over reacted at
+    long distances, I simply removed rule 7: ``(distance_side['high'] -> steering['no'])``
+- [ ] Write unit tests 
+
+
 <a name="headers"/>
 
 ## License

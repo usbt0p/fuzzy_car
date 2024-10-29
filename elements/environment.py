@@ -5,11 +5,11 @@ from random import randint
 class Constants:
     # Dimensions
     SCREEN_WIDTH = 900
-    SCREEN_HEIGHT = 700
+    SCREEN_HEIGHT = 680
     ROAD_WIDTH = 600
-    FPS = 20  # Reduced frame rate
+    FPS = 30  # Reduced frame rate
 
-    CAR_WIDTH = 75
+    CAR_WIDTH = 80
     CAR_HEIGHT = 85
     OBSTACLE_WIDTH = 60
     OBSTACLE_HEIGHT = 80
@@ -63,20 +63,11 @@ class Environment:
         # therefore one must call the other, cycle in dependency tree leads to error
         from .obstacle import Obstacle
         
-        # TODO test
-        '''rand_x = randint(
-                (Constants.SCREEN_WIDTH - Constants.ROAD_WIDTH) // 2,
-                (Constants.SCREEN_WIDTH + Constants.ROAD_WIDTH) // 2 - Constants.OBSTACLE_WIDTH)
-        
-        if randint(1, 50) == 1:  # Adjusted obstacle frequency
-            obstacles.append(Obstacle(img,
-                           (Constants.OBSTACLE_WIDTH, Constants.OBSTACLE_HEIGHT),
-                           (rand_x, -Constants.OBSTACLE_HEIGHT), 10))'''
 
         
         # TODO test
         # make them appear only one at a time constantly
-        if mode == 'random':
+        if mode == 'single_random':
             if not obstacles:
 
                 rand_x = randint(
@@ -88,6 +79,16 @@ class Environment:
                             (rand_x, -Constants.OBSTACLE_HEIGHT), 10)
 
                 obstacles.append(obs)
+
+        elif mode == 'multi_random':
+            rand_x = randint(
+                (Constants.SCREEN_WIDTH - Constants.ROAD_WIDTH) // 2,
+                (Constants.SCREEN_WIDTH + Constants.ROAD_WIDTH) // 2 - Constants.OBSTACLE_WIDTH)
+        
+            if randint(1, 50) == 1:  # Adjusted obstacle frequency
+                obstacles.append(Obstacle(img,
+                            (Constants.OBSTACLE_WIDTH, Constants.OBSTACLE_HEIGHT),
+                            (rand_x, -Constants.OBSTACLE_HEIGHT), 7))
 
         elif mode == 'alternate': # para testear moverse a derecha e izquierda
             if not obstacles:

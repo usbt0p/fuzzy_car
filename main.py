@@ -18,11 +18,11 @@ pg.display.set_caption("Simulador de Control de coche con lógica difusa")
 # Simulation loop
 
 def simulate():
-
+    
     # initialize car position and car object
     controller = FuzzyControl('mom') # controller with defuzzification method
     car_x = (const.SCREEN_WIDTH - const.CAR_WIDTH) // 2
-    car_y = const.SCREEN_HEIGHT - const.CAR_HEIGHT - 10
+    car_y = const.SCREEN_HEIGHT - const.CAR_HEIGHT - 20
     car = Car(car_img, (const.CAR_WIDTH, const.CAR_HEIGHT),
                 (car_x, car_y), 1, controller)
 
@@ -33,8 +33,6 @@ def simulate():
 
     clock = pg.time.Clock()  # time variables, FPS rate is in entorno.py
     start_time = pg.time.get_ticks()
-    last_time = start_time
-    time_offset = True
 
     while running:
         for event in pg.event.get():
@@ -58,7 +56,7 @@ def simulate():
         car.draw(screen)
 
         score = Environment.spawn_despawn_obstacles(
-            obstacles, obstacle_img, score, mode='random')
+            obstacles, obstacle_img, score, mode='multi_random')
         # simulation can theoretically handle several objects at once
         for obstacle in obstacles:
             obstacle.draw(screen)
@@ -70,7 +68,7 @@ def simulate():
 
         collision = Environment.obstacle_collisions(obstacles, car)
         if collision:
-            pass#running = False
+            running = False
 
         monitor.display_monitor_text(screen, score)
 
@@ -86,4 +84,6 @@ def simulate():
 
 
 if __name__ == "__main__":
+    # Valores por defecto: FPS 20, Velocidad objetos 10, mom, steering universe norm 6
+    # otros valores: FPS 30, Velocidad objetos 7, mom, steering universe norm 5
     simulate()

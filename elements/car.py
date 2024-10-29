@@ -2,7 +2,6 @@ from .entity import Entity
 from .environment import Constants as const
 from sensors import Sensors
 from random import getrandbits
-from fuzzyControl import control_movement
 from fuzzy import FuzzyControl
 import pygame as pg
 
@@ -49,26 +48,28 @@ class Car(Entity, Sensors):
         '''
         # TODO por ahora esta funcion recibe las distancias de los sensores
         # la idea es en el futuro abstraer esto y que directamente se llame a los
-        # sensores desde aqui, con lo que la funcion recibirá la lista de obstáculos 
         # del entorno
+        # sensores desde aqui, con lo que la funcion recibirá la lista de obstáculos 
 
-        # take the side measurements from the sensors and pass the proper one to the controller
-        move_right = True
-
-        if d_x_r < d_x_l:
+        for y, r, l in zip(d_y, d_x_r, d_x_l):
+            # take the side measurements from the sensors 
+            # and pass the proper one to the controller
             move_right = True
-            side_move = d_x_r
-        else:
-            move_right = False
-            side_move = d_x_l
 
-        move_amount = int(
-            self.controller.side_controller(side_move, d_y, debug=False))
+            if r < l:
+                move_right = True
+                side_move = r
+            else:
+                move_right = False
+                side_move = l
 
-        if move_right:
-            self.move_right(times=move_amount)
-        else:
-            self.move_left(times=move_amount)
+            move_amount = int(
+                self.controller.side_controller(side_move, y, debug=False))
+
+            if move_right:
+                self.move_right(times=move_amount)
+            else:
+                self.move_left(times=move_amount)
 
 
 # TODO pasar distancia de pg a metros
