@@ -4,9 +4,9 @@ from random import randint
 
 class Constants:
     # Dimensions
-    SCREEN_WIDTH = 800
-    SCREEN_HEIGHT = 600
-    ROAD_WIDTH = 400
+    SCREEN_WIDTH = 900
+    SCREEN_HEIGHT = 700
+    ROAD_WIDTH = 600
     FPS = 20  # Reduced frame rate
 
     CAR_WIDTH = 75
@@ -34,7 +34,9 @@ class Environment:
 
     def __init__(self, constants: Constants, colors: Colors):
         self.const = constants
-        self.colors = colors
+        self.colors = colors # TODO arerglar esto: todos estan accediendo directamente 
+        # a colors y constants cuando deberían acceder a self.colors y self.const
+        # TODO self.obstacles = [] # y todos los cambios que esto conlleve
         
 
     def moveInTimeIntervals(car, time_offset, start_time, last_time):
@@ -52,15 +54,6 @@ class Environment:
             time_offset = True
 
         return last_time, time_offset
-    
-
-    def manual_control(car):
-        # legacy for manual car movement
-        keys = pg.key.get_pressed()
-        if keys[pg.K_LEFT]:
-            car.move_left()
-        if keys[pg.K_RIGHT]:
-            car.move_right()
 
     @staticmethod
     def spawn_despawn_obstacles(obstacles, img, score, mode):
@@ -100,11 +93,12 @@ class Environment:
             if not obstacles:
 
                 if Environment._spawn_alternate:
-                    x = (Constants.SCREEN_WIDTH - Constants.ROAD_WIDTH) // 2 +50    
-                    Environment._spawn_alternate = False
-                else: 
                     x = (Constants.SCREEN_WIDTH + Constants.ROAD_WIDTH
                             ) // 2 - Constants.OBSTACLE_WIDTH - 50
+                        
+                    Environment._spawn_alternate = False
+                else: 
+                    x = (Constants.SCREEN_WIDTH - Constants.ROAD_WIDTH) // 2 +50
                     Environment._spawn_alternate = True
 
                 obs = Obstacle(img,

@@ -63,7 +63,7 @@ def draw_left_sensor(screen, car, obstacle, distance):
 
 def draw_road(screen):
     draw_coords = (const.SCREEN_WIDTH - const.ROAD_WIDTH)
-    line_width = const.ROAD_WIDTH // 40
+    line_width = 12 #const.ROAD_WIDTH // 40
     line_separation = 50
     line_height = const.SCREEN_HEIGHT//30
 
@@ -73,7 +73,8 @@ def draw_road(screen):
 
     # center
     pg.draw.rect(
-        screen, clrs.DARK_YELLOW, (draw_coords, 0, line_width, const.SCREEN_HEIGHT))
+        screen, clrs.DARK_YELLOW, (const.SCREEN_WIDTH//2 # FIXME change so that this can be drawn relative to the road and not the screen
+                             , 0, line_width, const.SCREEN_HEIGHT))
     # right line
     pg.draw.rect(
         screen, clrs.DARK_YELLOW, ((draw_coords//2)+10, 0, line_width, const. SCREEN_HEIGHT))
@@ -81,11 +82,12 @@ def draw_road(screen):
     pg.draw.rect(
         screen, clrs.DARK_YELLOW, (
             (draw_coords//2)+(const.ROAD_WIDTH-20), 0, line_width, const.SCREEN_HEIGHT))
+    
     # false discontinuous line
-
+    # TODO hacer que se mueva
     for i in range(-10, const.SCREEN_HEIGHT, line_separation):
         pg.draw.rect(screen, clrs.DARK_GRAY,
-                     (draw_coords, i, line_width, line_height))
+                     (const.SCREEN_WIDTH//2, i, line_width, line_height))
 
 
 def display_monitor_text(screen, score):

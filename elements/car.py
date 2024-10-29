@@ -3,12 +3,16 @@ from .environment import Constants as const
 from sensors import Sensors
 from random import getrandbits
 from fuzzyControl import control_movement
-
+from fuzzy import FuzzyControl
+import pygame as pg
 
 class Car(Entity, Sensors):
-    def __init__(self, image, dims, coords, speed):
+    def __init__(self, image : pg.image , dims : tuple, coords : tuple, 
+                 speed : int, controller : FuzzyControl):
+
         super().__init__(image, dims, coords, speed)
-        self.front_x_coords = self.x + self.width//2
+        self.front_x_coords : int = self.x + self.width//2
+        self.controller : FuzzyControl = controller
 
     def move_left(self, times=1):
         if self.x > (const.SCREEN_WIDTH - const.ROAD_WIDTH) // 2:
@@ -26,27 +30,45 @@ class Car(Entity, Sensors):
             self.move_left()
         else:
             self.move_right()
+    
+    def manual_control(car, amount):
+        # legacy for manual car movement
+        keys = pg.key.get_pressed()
+        if keys[pg.K_LEFT]:
+            car.move_left(amount)
+        if keys[pg.K_RIGHT]:
+            car.move_right(amount)
 
-    def controller(self, d_y, d_x_r, d_x_l):
-        
-        '''# FIXME esta mierda
-        print(d_y, d_x_r, d_x_l)
-        if None in d_y:
-            d_y = [25 if x is None else x for x in d_y] 
-        elif None in d_x_r:
-            d_x_r = [10 if x is None else x for x in d_x_r] 
-        elif None in d_x_l:
-            d_x_l = [10 if x is None else x for x in d_x_l] '''
-        print(d_y, d_x_r, d_x_l)
-        move = control_movement(d_y, d_x_r, d_x_l)
-        int_move = int(move)
-        print(int_move)
+    def control_system(self, d_y, d_x_r, d_x_l):
+        '''Provides the needed logic to connect the sensors
+        to the fuzzy control system. These are tha steps:
+        1. Get the distance from the sensors
+        2. Pass the distance to the controller
+        3. Get the output from the controller
+        4. Move the car according to the output
+        '''
+        # TODO por ahora esta funcion recibe las distancias de los sensores
+        # la idea es en el futuro abstraer esto y que directamente se llame a los
+        # sensores desde aqui, con lo que la funcion recibirá la lista de obstáculos 
+        # del entorno
 
-        if int_move > 0:
-            self.move_right(times=abs(int_move))
-        elif int_move < 0:
-            self.move_left(times=abs(int_move))
-            #print('right')
+        # take the side measurements from the sensors and pass the proper one to the controller
+        move_right = True
+
+        if d_x_r < d_x_l:
+            move_right = True
+            side_move = d_x_r
+        else:
+            move_right = False
+            side_move = d_x_l
+
+        move_amount = int(
+            self.controller.side_controller(side_move, d_y, debug=False))
+
+        if move_right:
+            self.move_right(times=move_amount)
+        else:
+            self.move_left(times=move_amount)
 
 
 # TODO pasar distancia de pg a metros

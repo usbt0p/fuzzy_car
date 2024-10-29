@@ -5,7 +5,7 @@ from elements.environment import Constants as const
 from elements.environment import Colors as clrs
 from elements.environment import Environment
 from monitor import car_img, obstacle_img
-from fuzzyControl import control_movement
+from fuzzy import FuzzyControl
 
 
 # Initialize pg
@@ -20,10 +20,11 @@ pg.display.set_caption("Simulador de Control de coche con lógica difusa")
 def simulate():
 
     # initialize car position and car object
+    controller = FuzzyControl('mom') # controller with defuzzification method
     car_x = (const.SCREEN_WIDTH - const.CAR_WIDTH) // 2
     car_y = const.SCREEN_HEIGHT - const.CAR_HEIGHT - 10
     car = Car(car_img, (const.CAR_WIDTH, const.CAR_HEIGHT),
-                (car_x, car_y), 3)
+                (car_x, car_y), 1, controller)
 
     # decalre list(Obstacle()) and simulation constants
     obstacles = []
@@ -44,38 +45,20 @@ def simulate():
         monitor.draw_road(screen)
 
         # activate sensors and draw them on the screen
-        d_y = car.obstacle_sensor_y_axis(obstacles)
+        d_y = car.obstacle_sensor_y_axis(obstacles) # TODO eventually move this to car.control_system
         d_x_r = car.obstacle_sensor_right(obstacles)
         d_x_l = car.obstacle_sensor_left(obstacles)
-
-        '''last_time, time_offset = Environment.moveInTimeIntervals(
-            car, time_offset, start_time, last_time)'''
-        
-        # intervals for moving
-        '''if time_offset:
-            last_time = (pg.time.get_ticks() - start_time) / 1000
-            time_offset = False
-
-        now = (pg.time.get_ticks() - start_time) / 1000
-
-        if (now) > (last_time + 0.05):
-            #car.random_walk()
-            
-            
-            if obstacles: # FIXME este parche
-                car.controller(d_y, d_x_r, d_x_l)
-                #control_movement(d_y, d_x_l, d_x_r)
-
-            time_offset = True'''
         
         if obstacles: # FIXME este parche
-            car.controller(d_y, d_x_r, d_x_l)
+            car.control_system(d_y, d_x_r, d_x_l)
             #control_movement(d_y, d_x_l, d_x_r)
+
+        car.manual_control(7) # for demo purposes, it can be ignored
         
         car.draw(screen)
 
         score = Environment.spawn_despawn_obstacles(
-            obstacles, obstacle_img, score, mode='alternate')
+            obstacles, obstacle_img, score, mode='random')
         # simulation can theoretically handle several objects at once
         for obstacle in obstacles:
             obstacle.draw(screen)

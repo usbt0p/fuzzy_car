@@ -19,6 +19,19 @@ Welcome to the Fuzzy Car Simulator! This project simulates a car controlled by f
 
 > Still in development!!! Basic structure is done, fuzzy control on the way.
 
+## TODO's
+- [ ] Make car change angle when turning
+- [ ] Make road lines move for a more dynamic environment
+- [x] Fix bad road drawing when resizing window 
+- [ ] Update documentation with latest changes
+- [ ] Document problems: 
+    - rules are hard to tame: separated right from left, order matters
+    - more variables than initially expected (return to center, etc.)
+    - choosing the right membership functions depends on the desired behavior
+    - choosing the rules is a bit of a trial and error process, and changes with the MFs
+    - fix moving too soon and moving when not needed (dist_x big or dist_y big)
+- [ ] Write unit tests 
+
 <a name="headers"/>
 
 ## The project
