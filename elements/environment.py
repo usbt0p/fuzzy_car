@@ -7,7 +7,7 @@ class Constants:
     SCREEN_WIDTH = 800
     SCREEN_HEIGHT = 600
     ROAD_WIDTH = 400
-    FPS = 30  # Reduced frame rate
+    FPS = 20  # Reduced frame rate
 
     CAR_WIDTH = 75
     CAR_HEIGHT = 85
@@ -29,9 +29,13 @@ class Colors:
 
 
 class Environment:
+
+    _spawn_alternate = True # Para el modo de obstáculos alternos
+
     def __init__(self, constants: Constants, colors: Colors):
         self.const = constants
         self.colors = colors
+        
 
     def moveInTimeIntervals(car, time_offset, start_time, last_time):
 
@@ -58,7 +62,8 @@ class Environment:
         if keys[pg.K_RIGHT]:
             car.move_right()
 
-    def spawn_despawn_obstacles(obstacles, img, score):
+    @staticmethod
+    def spawn_despawn_obstacles(obstacles, img, score, mode):
         # BUG weird aah circular import issue will give error for this function
         # obscatulo.py calls from .entorno import Constants as const
         # entorno.py calls from entornoEntidades.obstaculo import Obstaculo
@@ -78,17 +83,36 @@ class Environment:
         
         # TODO test
         # make them appear only one at a time constantly
-        if not obstacles:
+        if mode == 'random':
+            if not obstacles:
 
-            rand_x = randint(
-                (Constants.SCREEN_WIDTH - Constants.ROAD_WIDTH) // 2,
-                (Constants.SCREEN_WIDTH + Constants.ROAD_WIDTH) // 2 - Constants.OBSTACLE_WIDTH)
+                rand_x = randint(
+                    (Constants.SCREEN_WIDTH - Constants.ROAD_WIDTH) // 2,
+                    (Constants.SCREEN_WIDTH + Constants.ROAD_WIDTH) // 2 - Constants.OBSTACLE_WIDTH)
 
-            obs = Obstacle(img,
-                           (Constants.OBSTACLE_WIDTH, Constants.OBSTACLE_HEIGHT),
-                           (rand_x, -Constants.OBSTACLE_HEIGHT), 10)
+                obs = Obstacle(img,
+                            (Constants.OBSTACLE_WIDTH, Constants.OBSTACLE_HEIGHT),
+                            (rand_x, -Constants.OBSTACLE_HEIGHT), 10)
 
-            obstacles.append(obs)
+                obstacles.append(obs)
+
+        elif mode == 'alternate': # para testear moverse a derecha e izquierda
+            if not obstacles:
+
+                if Environment._spawn_alternate:
+                    x = (Constants.SCREEN_WIDTH - Constants.ROAD_WIDTH) // 2 +50    
+                    Environment._spawn_alternate = False
+                else: 
+                    x = (Constants.SCREEN_WIDTH + Constants.ROAD_WIDTH
+                            ) // 2 - Constants.OBSTACLE_WIDTH - 50
+                    Environment._spawn_alternate = True
+
+                obs = Obstacle(img,
+                            (Constants.OBSTACLE_WIDTH, Constants.OBSTACLE_HEIGHT),
+                            (x, -Constants.OBSTACLE_HEIGHT), 10)
+
+                obstacles.append(obs)
+
 
         for obstacle in obstacles[:]:
             obstacle.move()  # we don't draw here, not the job of entorno.py

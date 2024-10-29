@@ -7,10 +7,10 @@ pg.font.init()
 font = pg.font.Font(None, 36)
 distance_font = pg.font.SysFont(None, 20)
 
-car_img = pg.image.load('imgs/car.png')
+car_img = pg.image.load('imgs/coche_blanco.png')
 car_img = pg.transform.scale(car_img, (const.CAR_WIDTH, const.CAR_HEIGHT))
 
-obstacle_img = pg.image.load('imgs/granny.png')
+obstacle_img = pg.image.load('imgs/roadblock_yellow.png')
 obstacle_img = pg.transform.scale(
     obstacle_img, (const.OBSTACLE_WIDTH, const.OBSTACLE_HEIGHT))
 
@@ -96,7 +96,7 @@ def display_monitor_text(screen, score):
 
 
 def endgame_text(screen, score, start_time):
-    death_text = font.render(f"Abuelita atropellada!!", True, clrs.WHITE)
+    death_text = font.render(f"You crashed!!", True, clrs.WHITE)
     screen.blit(death_text, (const.SCREEN_WIDTH //
                 2 - 100, const.SCREEN_HEIGHT // 2 - 100))
 

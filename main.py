@@ -5,7 +5,7 @@ from elements.environment import Constants as const
 from elements.environment import Colors as clrs
 from elements.environment import Environment
 from monitor import car_img, obstacle_img
-
+from fuzzyControl import control_movement
 
 
 # Initialize pg
@@ -23,7 +23,7 @@ def simulate():
     car_x = (const.SCREEN_WIDTH - const.CAR_WIDTH) // 2
     car_y = const.SCREEN_HEIGHT - const.CAR_HEIGHT - 10
     car = Car(car_img, (const.CAR_WIDTH, const.CAR_HEIGHT),
-                (car_x, car_y), 25)
+                (car_x, car_y), 3)
 
     # decalre list(Obstacle()) and simulation constants
     obstacles = []
@@ -51,23 +51,31 @@ def simulate():
         '''last_time, time_offset = Environment.moveInTimeIntervals(
             car, time_offset, start_time, last_time)'''
         
-        if time_offset:
+        # intervals for moving
+        '''if time_offset:
             last_time = (pg.time.get_ticks() - start_time) / 1000
             time_offset = False
 
         now = (pg.time.get_ticks() - start_time) / 1000
 
-        if (now) > (last_time + 0.01):
+        if (now) > (last_time + 0.05):
             #car.random_walk()
+            
+            
+            if obstacles: # FIXME este parche
+                car.controller(d_y, d_x_r, d_x_l)
+                #control_movement(d_y, d_x_l, d_x_r)
 
+            time_offset = True'''
+        
+        if obstacles: # FIXME este parche
             car.controller(d_y, d_x_r, d_x_l)
-
-            time_offset = True
+            #control_movement(d_y, d_x_l, d_x_r)
         
         car.draw(screen)
 
         score = Environment.spawn_despawn_obstacles(
-            obstacles, obstacle_img, score)
+            obstacles, obstacle_img, score, mode='alternate')
         # simulation can theoretically handle several objects at once
         for obstacle in obstacles:
             obstacle.draw(screen)

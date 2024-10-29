@@ -1,3 +1,5 @@
+from elements.environment import Constants as const
+
 
 class Sensors:
     # TODO test
@@ -10,7 +12,9 @@ class Sensors:
                     (obstacle.y + obstacle.height) - (self.y))
                 distances.append(distance_y_axis)
             else:
-                distances.append(None)
+                # FIXME debe de haber una mejor solucion... 
+                # hay que gestionar esto en otra funcion quizá
+                distances.append(const.SCREEN_HEIGHT)
 
         return distances
     # TODO test
@@ -23,7 +27,9 @@ class Sensors:
                 distance_right = self.front_x_coords - obstacle.front_x_coords
                 distances.append(distance_right)
             else:
-                distances.append(None)
+                # FIXME debe de haber una mejor solucion...
+                # hay que gestionar esto en otra funcion quizá
+                distances.append(const.ROAD_WIDTH) 
 
         return distances
     # TODO test
@@ -36,6 +42,8 @@ class Sensors:
                 distance_left = obstacle.front_x_coords - self.front_x_coords
                 distances.append(distance_left)
             else:
-                distances.append(None)
+                # FIXME debe de haber una mejor solucion...
+                # hay que gestionar esto en otra funcion quizá
+                distances.append(const.ROAD_WIDTH)
 
         return distances

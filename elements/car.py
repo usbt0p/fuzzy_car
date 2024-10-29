@@ -29,22 +29,24 @@ class Car(Entity, Sensors):
 
     def controller(self, d_y, d_x_r, d_x_l):
         
-        # FIXME esta mierda
+        '''# FIXME esta mierda
         print(d_y, d_x_r, d_x_l)
         if None in d_y:
             d_y = [25 if x is None else x for x in d_y] 
         elif None in d_x_r:
             d_x_r = [10 if x is None else x for x in d_x_r] 
         elif None in d_x_l:
-            d_x_l = [10 if x is None else x for x in d_x_l] 
-
+            d_x_l = [10 if x is None else x for x in d_x_l] '''
+        print(d_y, d_x_r, d_x_l)
         move = control_movement(d_y, d_x_r, d_x_l)
         int_move = int(move)
+        print(int_move)
 
-        if move >= 0:
-            self.move_right(times=int_move)
-        else:
-            self.move_left(times=int_move)
+        if int_move > 0:
+            self.move_right(times=abs(int_move))
+        elif int_move < 0:
+            self.move_left(times=abs(int_move))
+            #print('right')
 
 
 # TODO pasar distancia de pg a metros

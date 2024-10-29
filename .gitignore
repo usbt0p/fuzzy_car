@@ -5,6 +5,7 @@ docs/*
 !docs/clase3.drawio.png
 !docs/basico.drawio.png
 stats.py
+imgs/*.jpg
 
 # Copied from https://github.com/github/gitignore/blob/main/Python.gitignore
 # Byte-compiled / optimized / DLL files
