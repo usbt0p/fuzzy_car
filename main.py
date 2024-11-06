@@ -49,14 +49,13 @@ def simulate():
         
         if obstacles: # FIXME este parche
             car.control_system(d_y, d_x_r, d_x_l)
-            #control_movement(d_y, d_x_l, d_x_r)
 
-        car.manual_control(7) # for demo purposes, it can be ignored
+        car.manual_control(7) # for demo purposes; this can be commented if you don't want to control it
         
         car.draw(screen)
 
         score = Environment.spawn_despawn_obstacles(
-            obstacles, obstacle_img, score, mode='multi_random')
+            obstacles, obstacle_img, score, mode='multi_random_balanced')
         # simulation can theoretically handle several objects at once
         for obstacle in obstacles:
             obstacle.draw(screen)
@@ -68,7 +67,7 @@ def simulate():
 
         collision = Environment.obstacle_collisions(obstacles, car)
         if collision:
-            running = False
+            pass#running = False
 
         monitor.display_monitor_text(screen, score)
 

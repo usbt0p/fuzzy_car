@@ -1,13 +1,14 @@
 import pygame as pg
 from random import randint
-
+from typing import List
 
 class Constants:
     # Dimensions
     SCREEN_WIDTH = 900
     SCREEN_HEIGHT = 680
     ROAD_WIDTH = 600
-    FPS = 30  # Reduced frame rate
+    FPS = 100  # Reduced frame rate
+    # TODO spawn frequency parameter, refactor spawn methods
 
     CAR_WIDTH = 80
     CAR_HEIGHT = 85
@@ -56,14 +57,21 @@ class Environment:
         return last_time, time_offset
 
     @staticmethod
-    def spawn_despawn_obstacles(obstacles, img, score, mode):
-        # BUG weird aah circular import issue will give error for this function
-        # obscatulo.py calls from .entorno import Constants as const
-        # entorno.py calls from entornoEntidades.obstaculo import Obstaculo
+    def spawn_despawn_obstacles(
+        obstacles : List, img : pg.image, score : int, mode : str) -> int:
+        '''
+        Modifies the passed obstacle list to spawn obstacles according to the 
+        given `mode` parameter. Returns the score (number of obstacles that got offscreen 
+        aka. despawned, without collisions).
+        
+        Parameters:
+            - `mode` : `{'single_random', 'multi_random', 'multi_random_balanced', 'alternate'}`
+        '''
+        # weird circular import issue will give error for this function
+        # obstacle.py calls from .entorno import Constants as const
+        # environment.py calls from elements.obstacle import Obstacle
         # therefore one must call the other, cycle in dependency tree leads to error
         from .obstacle import Obstacle
-        
-
         
         # TODO test
         # make them appear only one at a time constantly
@@ -74,11 +82,11 @@ class Environment:
                     (Constants.SCREEN_WIDTH - Constants.ROAD_WIDTH) // 2,
                     (Constants.SCREEN_WIDTH + Constants.ROAD_WIDTH) // 2 - Constants.OBSTACLE_WIDTH)
 
-                obs = Obstacle(img,
+                new_obs = Obstacle(img,
                             (Constants.OBSTACLE_WIDTH, Constants.OBSTACLE_HEIGHT),
                             (rand_x, -Constants.OBSTACLE_HEIGHT), 10)
 
-                obstacles.append(obs)
+                obstacles.append(new_obs)
 
         elif mode == 'multi_random':
             rand_x = randint(
@@ -89,6 +97,35 @@ class Environment:
                 obstacles.append(Obstacle(img,
                             (Constants.OBSTACLE_WIDTH, Constants.OBSTACLE_HEIGHT),
                             (rand_x, -Constants.OBSTACLE_HEIGHT), 7))
+
+        elif mode == 'multi_random_balanced':
+
+            # primero, comprobar las zonas que tienen obstáculos con check collision
+            # si no está ahí, hacer que spawnee
+            # otra cosa a comprobar: que no spawneen a una distancia entre ellos de menos de la anchura del coche
+            
+            rand_x = randint(
+                    (Constants.SCREEN_WIDTH - Constants.ROAD_WIDTH) // 2,
+                    (Constants.SCREEN_WIDTH + Constants.ROAD_WIDTH) // 2 - Constants.OBSTACLE_WIDTH)
+            y = -Constants.OBSTACLE_HEIGHT 
+
+            new_obs = Obstacle(img,
+                            (Constants.OBSTACLE_WIDTH, Constants.OBSTACLE_HEIGHT),
+                            (rand_x, y), 7)
+
+            def no_obstacle_overlap(obstacle): # TODO dessign decision: move this to a class method
+                toret = True
+
+                for obs in obstacles: # FIXME no hace falta hacerlo para todos... solo los que están cerca del inicio!!
+                    if obs.y < Constants.SCREEN_HEIGHT // 4: # esto solo comprueba los que están en el primer cuarto 
+                        if obstacle.check_collision(obs): # obs.check_collision(obstacle) # cambia performance??
+                            toret = False
+                            break
+                return toret
+            
+
+            if (no_obstacle_overlap(new_obs) and randint(1, 50)) == 1:  # Adjusted obstacle frequency
+                obstacles.append(new_obs)
 
         elif mode == 'alternate': # para testear moverse a derecha e izquierda
             if not obstacles:
@@ -102,11 +139,11 @@ class Environment:
                     x = (Constants.SCREEN_WIDTH - Constants.ROAD_WIDTH) // 2 +50
                     Environment._spawn_alternate = True
 
-                obs = Obstacle(img,
+                new_obs = Obstacle(img,
                             (Constants.OBSTACLE_WIDTH, Constants.OBSTACLE_HEIGHT),
                             (x, -Constants.OBSTACLE_HEIGHT), 10)
 
-                obstacles.append(obs)
+                obstacles.append(new_obs)
 
 
         for obstacle in obstacles[:]:
@@ -126,7 +163,30 @@ class Environment:
 
 
 if __name__ == '__main__':
-    # TODO test
+    # TODO why the fuck doesn't this work when executing this particular module
+    # no module name monitor: package structure issue???? 
+    from monitor import obstacle_img
+    from obstacle import Obstacle
+
     e = Environment(Constants, Colors)
     print(e.const.FPS)
     print(e.colors.BLACK)
+
+    ## TEST
+    obstacles = []
+    img = obstacle_img
+    score = 0
+    mode = 'multi_random_balanced'
+
+    # This should lead to no obstacle spawning (obstacle list lenght remains 1) spawning
+    obs = Obstacle(img,
+                    (Constants.OBSTACLE_WIDTH, Constants.OBSTACLE_HEIGHT),
+                    (0, -Constants.OBSTACLE_HEIGHT), 7)
+    bad_spawn = [obs]
+
+    e.spawn_despawn_obstacles(obstacles, img, score, mode)
+    assert len(obstacles) == 1, 'No obstacles must spawn if there is a collision between them'
+
+    obs.y = 200
+    good_spawn = [obs]
+

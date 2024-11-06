@@ -119,14 +119,17 @@ python main.py
 </a>
 
 - [ ] Make car change angle when turning
-- [ ] Add image to readme
+- [x] Add image to readme
 - [ ] Randomize obstacle images
 - [ ] Make road lines move for a more dynamic environment
-- [ ] Adjust spawn rate of obstacles and prevent impossible spawns and blockages
+- [ ] Adjust spawn rate of obstacles and prevent impossible spawns and blockages:
+    - [x] no obstacle overlap
+    - [ ] no "barriers": spawns in line that don't leave room for the car to fit between them
 - [ ] Adjust controller: too many obstacles on one side overpower one very close on the other
 - [ ] Adjust defuzz method an possibly some membership functions (change to trapezoidal, move fuzzy numbers)
 - [x] Fix bad road drawing when resizing window 
-- [ ] Update documentation with latest changes
+- [x] Update documentation with latest changes
+- [ ] Draw hitboxes to debug possible problems 
 - [ ] Document problems: 
     - rules are hard to tame: separated right from left, order matters
     - more variables than initially expected (return to center, etc.)
@@ -136,6 +139,10 @@ python main.py
     - sometimes, less rules is better. To remove the issue where the car over reacted at
     long distances, I simply removed rule 7: ``(distance_side['high'] -> steering['no'])``
 - [ ] Write unit tests 
+- [ ] mirar researchgate para cosas de funciones de pertenencia y de defuzz
+- [ ] modificar las constantes de dimensión para que dependan del obstáculo, si no randomizarlos es imosible
+- [ ] make a 'obstacle circuit' where the car makes a turn +  barrier mode that spawns barriers with a hole so the car goes into it
+- [ ] do some typing for the modules
 
 
 <a name="headers"/>
