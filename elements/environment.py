@@ -58,14 +58,16 @@ class Environment:
 
     @staticmethod
     def spawn_despawn_obstacles(
-        obstacles : List, img : pg.image, score : int, mode : str) -> int:
-        '''
-        Modifies the passed obstacle list to spawn obstacles according to the 
+        obstacles : List, img : pg.image, score : int, mode : str, **kwargs) -> int:
+        '''Modifies the passed obstacle list to spawn obstacles according to the 
         given `mode` parameter. Returns the score (number of obstacles that got offscreen 
-        aka. despawned, without collisions).
-        
+        aka. despawned, without collisions). 
+        `*args` takes an optional car object for the front_of_car mode.
         Parameters:
-            - `mode` : `{'single_random', 'multi_random', 'multi_random_balanced', 'alternate'}`
+            - `mode` : `{'single_random', 'multi_random', 'multi_random_balanced', 
+                'alternate', 'front_of_car'}`
+        Returns:  
+            - `score` : int  
         '''
         # weird circular import issue will give error for this function
         # obstacle.py calls from .entorno import Constants as const
@@ -144,7 +146,15 @@ class Environment:
                             (x, -Constants.OBSTACLE_HEIGHT), 10)
 
                 obstacles.append(new_obs)
-
+        
+        elif mode == 'front_of_car':
+            car = kwargs['car'] 
+            if not obstacles:
+                new_obs = Obstacle(img,
+                            (Constants.OBSTACLE_WIDTH, Constants.OBSTACLE_HEIGHT),
+                            (car.x, -Constants.OBSTACLE_HEIGHT), 7)
+                print('obstacle x: ', new_obs.x, ', car x: ', car.x)
+                obstacles.append(new_obs)
 
         for obstacle in obstacles[:]:
             obstacle.move()  # we don't draw here, not the job of entorno.py

@@ -40,7 +40,7 @@ class Car(Entity, Sensors):
 
     def control_system(self, d_y, d_x_r, d_x_l):
         '''Provides the needed logic to connect the sensors
-        to the fuzzy control system. These are tha steps:
+        to the fuzzy control system. These are the steps:
         1. Get the distance from the sensors
         2. Pass the distance to the controller
         3. Get the output from the controller
@@ -48,20 +48,27 @@ class Car(Entity, Sensors):
         '''
         # TODO por ahora esta funcion recibe las distancias de los sensores
         # la idea es en el futuro abstraer esto y que directamente se llame a los
-        # del entorno
         # sensores desde aqui, con lo que la funcion recibirá la lista de obstáculos 
 
         for y, r, l in zip(d_y, d_x_r, d_x_l):
-            # take the side measurements from the sensors 
-            # and pass the proper one to the controller
-            move_right = True
-
-            if r < l:
+            # take the side measurements from the sensors and pass the proper one to the controller
+            move_right = True                
+            # a sensor will pass None if there is no obstacle in that direction
+            if l is None:
                 move_right = True
                 side_move = r
-            else:
+            elif r is None:
                 move_right = False
                 side_move = l
+            else:
+                # this means the obstacle is exactly in front of the car
+                # the order of the rules will determine what is done in this case
+                # also the last movement, since move_right will've been set 
+                side_move = 0
+                print(f'Warning: object right in the middle! (Y: {y}, R: {r}, L: {l})')
+                print('Movement will be determined by the last movement.')
+                print('Last movement: move_right=', move_right)
+                
 
             move_amount = int(
                 self.controller.side_controller(side_move, y, debug=False))
@@ -71,8 +78,6 @@ class Car(Entity, Sensors):
             else:
                 self.move_left(times=move_amount)
 
-
-# TODO pasar distancia de pg a metros
 # TODO crear una función de nearest_point? para que no vaya al centro, si no
 # al punto más cercano del obstáculo, como un sensor real...
 

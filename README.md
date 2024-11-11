@@ -128,6 +128,9 @@ python main.py
 - [ ] Write unit tests 
 - [ ] mirar researchgate para cosas de funciones de pertenencia y de defuzz
 - [ ] make a 'obstacle circuit' where the car makes a turn +  barrier mode that spawns barriers with a hole so the car goes into it
+- [x] check what happens if an obstacle is right in front, and neither
+    `self.front_x_coords > obstacle.front_x_coords` nor `self.front_x_coords < obstacle.front_x_coords` are true `(d_x, d_y) == (None, None)`.
+- [ ] fix: car still overreacts when obstacle is far away to the side
 
 ### Optional requirements / GUI stuff
 - [x] Draw hitboxes to debug possible problems 
