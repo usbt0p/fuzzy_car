@@ -7,7 +7,9 @@ from elements.environment import Environment
 from elements.entity import Entity
 from monitor import car_img, obstacle_img
 from fuzzy import FuzzyControl
+import sys
 
+commands = set(sys.argv[1:])
 
 # Initialize pg
 pg.init()
@@ -23,7 +25,7 @@ def simulate():
     # initialize car position and car object
     controller = FuzzyControl('mom') # controller with defuzzification method
     car_x = (const.SCREEN_WIDTH - const.CAR_WIDTH) // 2
-    car_y = const.SCREEN_HEIGHT - const.CAR_HEIGHT - 20
+    car_y = const.SCREEN_HEIGHT - const.CAR_HEIGHT - 80
     car = Car(car_img, (const.CAR_WIDTH, const.CAR_HEIGHT),
                 (car_x, car_y), 1, controller)
 
@@ -31,7 +33,9 @@ def simulate():
     obstacles = []
     score = 0
     running = True
-    Entity._hitbox = True
+    Entity._hitbox = False
+    if ('-h' in commands) or ('--show-hitbox' in commands):
+        Entity._hitbox = True
 
     clock = pg.time.Clock()  # time variables, FPS rate is in entorno.py
     start_time = pg.time.get_ticks()
@@ -62,13 +66,16 @@ def simulate():
         for obstacle in obstacles:
             obstacle.draw(screen)
 
-        for obstacle, d_y, d_x_r, d_x_l in zip(obstacles, d_y, d_x_r, d_x_l):
-            monitor.draw_y_sensor(screen, car, obstacle, d_y)
-            monitor.draw_right_sensor(screen, car, obstacle, d_x_r)
-            monitor.draw_left_sensor(screen, car, obstacle, d_x_l)
+        if ('-s' in commands) or ('--show-sensors' in commands):
+            for obstacle, d_y, d_x_r, d_x_l in zip(obstacles, d_y, d_x_r, d_x_l):
+                monitor.draw_y_sensor(screen, car, obstacle, d_y)
+                monitor.draw_right_sensor(screen, car, obstacle, d_x_r)
+                monitor.draw_left_sensor(screen, car, obstacle, d_x_l)
 
         collision = Environment.obstacle_collisions(obstacles, car)
         if collision:
+            if ('-nc' in commands) or ('--no-collision' in commands):
+                running = True
             running = False
 
         monitor.display_monitor_text(screen, score)

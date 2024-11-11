@@ -49,10 +49,10 @@ class Car(Entity, Sensors):
         # TODO por ahora esta funcion recibe las distancias de los sensores
         # la idea es en el futuro abstraer esto y que directamente se llame a los
         # sensores desde aqui, con lo que la funcion recibirá la lista de obstáculos 
-
+        move_right = True 
         for y, r, l in zip(d_y, d_x_r, d_x_l):
             # take the side measurements from the sensors and pass the proper one to the controller
-            move_right = True                
+                           
             # a sensor will pass None if there is no obstacle in that direction
             if l is None:
                 move_right = True

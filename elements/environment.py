@@ -7,7 +7,7 @@ class Constants:
     SCREEN_WIDTH = 900
     SCREEN_HEIGHT = 680
     ROAD_WIDTH = 600
-    FPS = 50  # Reduced frame rate
+    FPS = 40  # Reduced frame rate
     # TODO spawn frequency parameter, refactor spawn methods
 
     CAR_WIDTH = 45 # 80

@@ -118,6 +118,7 @@ python main.py
 
 </a>
 
+> This section acts as a kind of 'mind dump'. Ideas I may want to include or to study, etc. None of them are mandatory, it's just a guideline.
 
 ### Main functionalities / functional requirements
 - [ ] Adjust spawn rate of obstacles and prevent impossible spawns and blockages:
@@ -140,6 +141,7 @@ python main.py
 - [ ] Randomize obstacle images
 - [ ] modificar las constantes de dimensión para que dependan del obstáculo, si no randomizarlos es imosible
 - [ ] do some typing for the modules
+- [ ] add an argsparser, and take spawn methods as arguments, as well as options for hitboxes, showing sensor views and activating collisions
 
 ### Documentation
 - [x] Update documentation with latest changes
@@ -154,6 +156,16 @@ python main.py
     long distances, I simply removed rule 7: ``(distance_side['high'] -> steering['no'])``
     - bug in the sensors: i stopped the y_coords after the front was passed, it
 caused the car to crash from behind upon passing
+
+### Ideas
+- Several controllers finetuned to specific scenarios. For example one for close and dense vehicle situations, and another one for few vehicles in a long range (avoids preventively).
+- Following this idea, wo could have:
+    - A controller with few and smooth rules that operate for long distances, since far away cases don't need as much precision.
+    - A controller for more close situations (determined by the number of obstacles and their proximity maybe), that would have more rules but would deactivate as soon as the obstacles leave the range.
+- Having the 'higher' parameter only for the most critical rule ensures it will always overpower others even in many vehicle scenarios.
+- Some optimization is needed for the code to work properly. A profiling tool would be useful.
+- It could be smart to make the sensors have a 'radius' that only returns the k nearest obstacle's data.
+- Introducing random noise could be an interesting way of checking other benefits of the fuzzy controller.
 
 <a name="headers"/>
 

@@ -2,8 +2,6 @@ import numpy as np
 from skfuzzy import control as ctrl
 import matplotlib.pyplot as plt
 from elements.environment import Constants as const
-import skfuzzy as fuzz
-
 
 class FuzzyControl:
 
@@ -15,10 +13,11 @@ class FuzzyControl:
         self.memberships = []
 
         # define our universes
-        road_width = np.arange(0, (const.ROAD_WIDTH+1)) # FIXME averiguar como afecta esta normalizacióna al movimiento!!
+        road_width = np.arange(0, (const.ROAD_WIDTH+1))
         road_length = np.arange(0, (const.SCREEN_HEIGHT+1))
-        norm = 5 # BUG por que al bajarlo a 5 se hace la funcion rara?
-        steering_universe = np.arange(0, norm+1) # TODO normalizar en funcion de lo mucho que se mueva, y de la velocidad!!!
+        norm = 6 # this parameter changes the max value of the outputed steering. 
+        # it roughly maps to the 'acceleration' the car will have when turning
+        steering_universe = np.arange(0, norm+1)
 
         # Antecedent/Consequent objects hold universe variables and membership functions
         distance_side = ctrl.Antecedent(road_width, 'distance_right')
@@ -28,45 +27,47 @@ class FuzzyControl:
         self.steering = steering # para plottear en el debug
 
         # membership for right distance
-        r_sets = 2
-        divs_r = const.ROAD_WIDTH/r_sets
-        distance_side['low'] = fuzz.trimf(distance_side.universe, [0, 0, divs_r])
-        distance_side['medium'] = fuzz.trimf(
-            distance_side.universe, [0, divs_r, divs_r*2])
-        distance_side['high'] = fuzz.trimf(
-            distance_side.universe, [divs_r, divs_r*2, divs_r*3])
+        distance_side.automf(5, variable_type='quant')
         self.memberships.append(distance_side)
         
         # membership for front distance
-        f_sets = 2
-        divs_f = const.SCREEN_HEIGHT/f_sets
-        distance_front['low'] = fuzz.trimf(distance_front.universe, [0, 0, divs_f])
-        distance_front['medium'] = fuzz.trimf(
-            distance_front.universe, [0, divs_f, divs_f*2])
-        distance_front['high'] = fuzz.trimf(
-            distance_front.universe, [divs_f, divs_f*2, divs_f*3])
+        distance_front.automf(5, variable_type='quant')
         self.memberships.append(distance_front)
 
         # membership for steering output
-        s_sets = 2
-        divs_s = norm/s_sets
-        steering['no'] = fuzz.trimf(steering.universe, [0, 0, divs_s])
-        steering['some'] = fuzz.trimf(steering.universe, [0, divs_s, divs_s*2])
-        steering['a_lot'] = fuzz.trimf(steering.universe, [divs_s, divs_s*2, divs_s*3])
+        steering.automf(5, variable_type='quant')
         self.memberships.append(steering)
 
-        # side + front rules
-        side1 = ctrl.Rule(distance_side['low'] & distance_front['low'], steering['a_lot'])
-        side2 = ctrl.Rule(distance_side['low'] & distance_front['medium'], steering['some'])
-        side3 = ctrl.Rule(distance_side['low'] & distance_front['high'], steering['no'])
+        # side + front rules, automf values: 'lower'; 'low'; 'average'; 'high', or 'higher'
+        # we have combinations of two 5-valued variables, so: 
+        # 5*5 = 25 combinations without accounting consequents, but some rules are ignored
 
-        side4 = ctrl.Rule(distance_side['medium'] & distance_front['low'], steering['some'])
-        side5 = ctrl.Rule(distance_side['medium'] & distance_front['medium'], steering['no'])
-        side6 = ctrl.Rule(distance_side['medium'] & distance_front['high'], steering['no'])
+        # reaction to close obstacles. the first rule being the one with the highest priority
+        # makes the car overpower the steering when there are other non-close obstacles activating the other rules
+        rules = [ctrl.Rule(distance_side['lower'] & distance_front['lower'], steering['higher'])]
+        rules.append(ctrl.Rule(distance_side['lower'] & distance_front['low'], steering['average']))
+        rules.append(ctrl.Rule(distance_side['lower'] & distance_front['average'], steering['low']))
+        # rules for supressing influence from far away obstacles
+        rules.append(ctrl.Rule(distance_side['lower'] & distance_front['high'], steering['lower']))
+        rules.append(ctrl.Rule(distance_side['lower'] & distance_front['higher'], steering['lower']))
         
+        # rules for for medium-low side reaction 
+        # TODO temporarily removed: these seem be almost a better turned off, + better performance 
+        '''rules.append(ctrl.Rule(distance_side['low'] & distance_front['lower'], steering['average']))
+        rules.append(ctrl.Rule(distance_side['low'] & distance_front['low'], steering['low']))
+        rules.append(ctrl.Rule(distance_side['low'] & distance_front['average'], steering['lower']))'''
+        # rules for supressing influence from far away obstacles
+        rules.append(ctrl.Rule(distance_side['low'] & distance_front['high'], steering['lower']))
+        rules.append(ctrl.Rule(distance_side['low'] & distance_front['higher'], steering['lower']))
+        
+        # supress influence from obstacles that are close to the front but far away from the side
+        rules.append(ctrl.Rule(distance_side['higher'] |  distance_side['high'] | distance_side['average'] 
+                               & distance_front['lower'], steering['lower']))
+        rules.append(ctrl.Rule(distance_side['higher'] |  distance_side['high'] | distance_side['average'] 
+                               & distance_front['low'], steering['lower']))
+    
         # setup and begin simulation for the side controller
-        rules_side = [side1, side2, side3, side4, side5, side6]
-        steering_ctrl_right = ctrl.ControlSystem(rules_side)
+        steering_ctrl_right = ctrl.ControlSystem(rules)
         self.ctrl_simulator = ctrl.ControlSystemSimulation(steering_ctrl_right)
 
 
