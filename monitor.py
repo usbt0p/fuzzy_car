@@ -7,7 +7,7 @@ pg.font.init()
 font = pg.font.Font(None, 36)
 distance_font = pg.font.SysFont(None, 20)
 
-car_img = pg.image.load('imgs/coche_blanco.png')
+car_img = pg.image.load('imgs/coche_estrecho.png')
 car_img = pg.transform.scale(car_img, (const.CAR_WIDTH, const.CAR_HEIGHT))
 
 obstacle_img = pg.image.load('imgs/roadblock_yellow.png')
@@ -111,3 +111,15 @@ def endgame_text(screen, score, start_time):
     time_text = font.render(f"Time: {elapsed_time} seconds", True, clrs.WHITE)
     screen.blit(time_text, (const.SCREEN_WIDTH //
                 2 - 100, const.SCREEN_HEIGHT // 2))
+
+
+if __name__ == "__main__":
+    car_img = pg.image.load('imgs/coche_estrecho.png')
+    width = car_img.get_width()
+    height = car_img.get_height()
+    print("width: ", width , ", height: ", height)
+
+    obstacle_img = pg.image.load('imgs/roadblock_yellow.png')
+    width = obstacle_img.get_width()
+    height = obstacle_img.get_height()
+    print("width: ", width , ", height: ", height)

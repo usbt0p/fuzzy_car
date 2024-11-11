@@ -4,6 +4,7 @@ import monitor
 from elements.environment import Constants as const
 from elements.environment import Colors as clrs
 from elements.environment import Environment
+from elements.entity import Entity
 from monitor import car_img, obstacle_img
 from fuzzy import FuzzyControl
 
@@ -30,6 +31,7 @@ def simulate():
     obstacles = []
     score = 0
     running = True
+    Entity._hitbox = True
 
     clock = pg.time.Clock()  # time variables, FPS rate is in entorno.py
     start_time = pg.time.get_ticks()
@@ -67,7 +69,7 @@ def simulate():
 
         collision = Environment.obstacle_collisions(obstacles, car)
         if collision:
-            pass#running = False
+            running = False
 
         monitor.display_monitor_text(screen, score)
 

@@ -18,7 +18,7 @@ Welcome to the Fuzzy Car Simulator! This project simulates a car controlled by f
 ## State
 </a>
 
-> Still in development! For now, this is a functioning prototype.
+> Still in development! For now, this is a functioning prototype. Fuzzy rules are still being adjusted, so the car doesn't respond as well as it should.
 
 <a name="headers"/>
 
@@ -118,18 +118,29 @@ python main.py
 
 </a>
 
-- [ ] Make car change angle when turning
-- [x] Add image to readme
-- [ ] Randomize obstacle images
-- [ ] Make road lines move for a more dynamic environment
+
+### Main functionalities / functional requirements
 - [ ] Adjust spawn rate of obstacles and prevent impossible spawns and blockages:
     - [x] no obstacle overlap
     - [ ] no "barriers": spawns in line that don't leave room for the car to fit between them
 - [ ] Adjust controller: too many obstacles on one side overpower one very close on the other
 - [ ] Adjust defuzz method an possibly some membership functions (change to trapezoidal, move fuzzy numbers)
+- [ ] Write unit tests 
+- [ ] mirar researchgate para cosas de funciones de pertenencia y de defuzz
+- [ ] make a 'obstacle circuit' where the car makes a turn +  barrier mode that spawns barriers with a hole so the car goes into it
+
+### Optional requirements / GUI stuff
+- [x] Draw hitboxes to debug possible problems 
 - [x] Fix bad road drawing when resizing window 
+- [ ] Make car change angle when turning
+- [ ] Make road lines move for a more dynamic environment
+- [ ] Randomize obstacle images
+- [ ] modificar las constantes de dimensión para que dependan del obstáculo, si no randomizarlos es imosible
+- [ ] do some typing for the modules
+
+### Documentation
 - [x] Update documentation with latest changes
-- [ ] Draw hitboxes to debug possible problems 
+- [x] Add image to readme
 - [ ] Document problems: 
     - rules are hard to tame: separated right from left, order matters
     - more variables than initially expected (return to center, etc.)
@@ -138,12 +149,8 @@ python main.py
     - fix moving too soon and moving when not needed (dist_x big or dist_y big)
     - sometimes, less rules is better. To remove the issue where the car over reacted at
     long distances, I simply removed rule 7: ``(distance_side['high'] -> steering['no'])``
-- [ ] Write unit tests 
-- [ ] mirar researchgate para cosas de funciones de pertenencia y de defuzz
-- [ ] modificar las constantes de dimensión para que dependan del obstáculo, si no randomizarlos es imosible
-- [ ] make a 'obstacle circuit' where the car makes a turn +  barrier mode that spawns barriers with a hole so the car goes into it
-- [ ] do some typing for the modules
-
+    - bug in the sensors: i stopped the y_coords after the front was passed, it
+caused the car to crash from behind upon passing
 
 <a name="headers"/>
 
@@ -166,6 +173,12 @@ Enjoy the simulation and happy coding!
 Things I learned while doing this project:
 - [Circular imports](https://rollbar.com/blog/how-to-fix-circular-import-in-python/#) are a problem in Python. Didn't come across them until now. Makes sense given how it does module search an bytecode compilation.
 - Git things like [removing tracked files](https://stackoverflow.com/questions/45400361/why-is-gitignore-not-ignoring-my-files) and [gitignore exclusions from wildcards](https://stackoverflow.com/questions/5533050/gitignore-exclude-folder-but-include-specific-subfolder).
+
+- Fuzzy rules, as simple as they may seem, have some issues. 
+
+    First, there can be a huge combinatorial explosion of rules that have to be defined if one chooses several antecedents and consequents, moreso if each one has a high amount of membership functions.
+
+    Then there is the issue of testing and debugging. Since the only way to check if the rules are correct in *any scenario* is by trial and error + gradual improvement, testing and adjusting takes a lot of time.
 
 
 
