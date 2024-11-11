@@ -17,7 +17,7 @@ class FuzzyControl:
         # define our universes
         road_width = np.arange(0, (const.ROAD_WIDTH+1)//2) # FIXME averiguar como afecta esta normalizacióna al movimiento!!
         road_length = np.arange(0, (const.SCREEN_HEIGHT+1)//2)
-        norm = 5 # BUG por que al bajarlo a 5 se hace la funcion rara?
+        norm = 4 # BUG por que al bajarlo a 5 se hace la funcion rara?
         steering_universe = np.arange(0, norm+1) # TODO normalizar en funcion de lo mucho que se mueva, y de la velocidad!!!
 
         # Antecedent/Consequent objects hold universe variables and membership functions
@@ -55,14 +55,21 @@ class FuzzyControl:
         # side + front rules
         side1 = ctrl.Rule(distance_side['low'] & distance_front['low'], steering['a_lot'])
         side2 = ctrl.Rule(distance_side['low'] & distance_front['medium'], steering['some'])
-        side3 = ctrl.Rule(distance_side['low'] & distance_front['high'], steering['no'])
+        side3 = ctrl.Rule(distance_side['low'] & distance_front['high'], steering['some'])
 
-        side4 = ctrl.Rule(distance_side['medium'] & distance_front['low'], steering['some'])
+        side4 = ctrl.Rule(distance_side['medium'] & distance_front['low'], steering['no'])
         side5 = ctrl.Rule(distance_side['medium'] & distance_front['medium'], steering['no'])
         side6 = ctrl.Rule(distance_side['medium'] & distance_front['high'], steering['no'])
+
+        # FIXME poner o no en funcion de la performance 
+        # mezclando con otro controlador de cercania podria funcionar
+        '''side7 = ctrl.Rule(distance_side['high'] & distance_front['low'], steering['no'])
+        side8 = ctrl.Rule(distance_side['high'] & distance_front['medium'], steering['no'])
+        side9 = ctrl.Rule(distance_side['high'] & distance_front['high'], steering['no'])'''
+
         
         # setup and begin simulation for the side controller
-        rules_side = [side1, side2, side3, side4, side5, side6]
+        rules_side = [side1, side2, side3, side4, side5, side6]#, side7, side8, side9]
         steering_ctrl_right = ctrl.ControlSystem(rules_side)
         self.ctrl_simul_right = ctrl.ControlSystemSimulation(steering_ctrl_right)
 
