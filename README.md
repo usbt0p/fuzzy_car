@@ -142,6 +142,7 @@ python main.py
 - [ ] modificar las constantes de dimensión para que dependan del obstáculo, si no randomizarlos es imosible
 - [ ] do some typing for the modules
 - [ ] add an argsparser, and take spawn methods as arguments, as well as options for hitboxes, showing sensor views and activating collisions
+- [ ] FIX THIS BUG: using the `front_of_car` argument for the `spawn_despawn_obstacles` method causes the obstacles to spawn NOT in front, but only with certain image sizes for the obstacles and car. Possible fixes: figure out the formula to align both, wich might be impossible for all car/obstacle pairs given the x and y coordinates are integers. Another option would be to force the images to have a certain width ratio with respect to one another, so that the formula can always apply. Finally the easiest is just enforce constant widths, non mutable, and ensure all of them allow the proper center spawn calculations. 
 
 ### Documentation
 - [x] Update documentation with latest changes
