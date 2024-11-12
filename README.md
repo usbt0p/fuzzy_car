@@ -124,6 +124,7 @@ python main.py
 - [ ] Adjust spawn rate of obstacles and prevent impossible spawns and blockages:
     - [x] no obstacle overlap
     - [ ] no "barriers": spawns in line that don't leave room for the car to fit between them
+    - [ ] set a maximum number of obstacles allowed
 - [ ] Adjust controller: too many obstacles on one side overpower one very close on the other
 - [ ] Adjust defuzz method an possibly some membership functions (change to trapezoidal, move fuzzy numbers)
 - [ ] Write unit tests 
@@ -157,6 +158,7 @@ python main.py
     long distances, I simply removed rule 7: ``(distance_side['high'] -> steering['no'])``
     - bug in the sensors: i stopped the y_coords after the front was passed, it
 caused the car to crash from behind upon passing
+    - computer shut off suddenly due to unknown reasons after implementing k nearest obstacles.
 
 ### Ideas
 - Several controllers finetuned to specific scenarios. For example one for close and dense vehicle situations, and another one for few vehicles in a long range (avoids preventively).

@@ -48,13 +48,15 @@ def simulate():
         screen.fill(clrs.GRAY)
         monitor.draw_road(screen)
 
-        # activate sensors and draw them on the screen
-        d_y = car.obstacle_sensor_y_axis(obstacles) # TODO eventually move this to car.control_system
-        d_x_r = car.obstacle_sensor_right(obstacles)
-        d_x_l = car.obstacle_sensor_left(obstacles)
+        # activate sensors
+        dist_y, dist_right, dist_left = car.get_sensor_measurings(obstacles)
         
-        if obstacles: # FIXME este parche
-            car.control_system(d_y, d_x_r, d_x_l)
+        # TODO mejora de rendimiento -> hacerlo cada x frames en vez de cada frame
+        nearest_obstacles = car.find_nearest_obstacles(
+            obstacles, dist_y, dist_right, dist_left)
+        
+        if nearest_obstacles: # FIXME este parche
+            car.control_system(dist_y, dist_right, dist_left)
 
         car.manual_control(7) # for demo purposes; this can be commented if you don't want to control it
         
@@ -67,7 +69,8 @@ def simulate():
             obstacle.draw(screen)
 
         if ('-s' in commands) or ('--show-sensors' in commands):
-            for obstacle, d_y, d_x_r, d_x_l in zip(obstacles, d_y, d_x_r, d_x_l):
+            for obstacle, d_y, d_x_r, d_x_l in zip(
+                    nearest_obstacles, dist_y, dist_right, dist_left):
                 monitor.draw_y_sensor(screen, car, obstacle, d_y)
                 monitor.draw_right_sensor(screen, car, obstacle, d_x_r)
                 monitor.draw_left_sensor(screen, car, obstacle, d_x_l)
