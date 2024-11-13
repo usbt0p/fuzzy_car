@@ -121,6 +121,8 @@ python main.py
 > This section acts as a kind of 'mind dump'. Ideas I may want to include or to study, etc. None of them are mandatory, it's just a guideline.
 
 ### Main functionalities / functional requirements
+- [ ] add press q to quit in deathscreen so that you can see the death images and enalize failures
+- [ ] add pause simulation button
 - [ ] implement moving to center in fuzzy rules
 - [ ] Adjust spawn rate of obstacles and prevent impossible spawns and blockages:
     - [x] no obstacle overlap

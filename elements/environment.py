@@ -11,9 +11,9 @@ class Constants:
     # TODO spawn frequency parameter, refactor spawn methods
 
     CAR_WIDTH = 45 # 80
-    CAR_HEIGHT = 85 # 85
+    CAR_HEIGHT = 90 # 85
     OBSTACLE_WIDTH = 70 # 60
-    OBSTACLE_HEIGHT = 70 # 80
+    OBSTACLE_HEIGHT = 55 # 80
     MAX_OBSTACLES = 5
 
 

@@ -7,13 +7,8 @@ pg.font.init()
 font = pg.font.Font(None, 36)
 distance_font = pg.font.SysFont(None, 20)
 
-car_img = pg.image.load('imgs/coche_estrecho.png')
-car_img = pg.transform.scale(car_img, (const.CAR_WIDTH, const.CAR_HEIGHT))
-
+car_img = pg.image.load('imgs/white_car.png')
 obstacle_img = pg.image.load('imgs/roadblock_yellow.png')
-obstacle_img = pg.transform.scale(
-    obstacle_img, (const.OBSTACLE_WIDTH, const.OBSTACLE_HEIGHT))
-
 
 def draw_y_sensor(screen, car, obstacle, distance):
 
