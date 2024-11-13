@@ -12,8 +12,7 @@ class FuzzyControl:
         self.defuzz_method = defuzz_method
         self.memberships = []
 
-        # define our universes
-        road_width = np.arange(0, (const.ROAD_WIDTH+1))
+        road_width = np.arange(0, ((const.ROAD_WIDTH+1)-const.CAR_WIDTH)//2)
         road_length = np.arange(0, (const.SCREEN_HEIGHT+1))
         norm = 6 # this parameter changes the max value of the outputed steering. 
         # it roughly maps to the 'acceleration' the car will have when turning

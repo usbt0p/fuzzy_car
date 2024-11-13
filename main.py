@@ -25,7 +25,7 @@ def simulate():
     # initialize car position and car object
     controller = FuzzyControl('mom') # controller with defuzzification method
     car_x = (const.SCREEN_WIDTH - const.CAR_WIDTH) // 2
-    car_y = const.SCREEN_HEIGHT - const.CAR_HEIGHT - 80
+    car_y = const.SCREEN_HEIGHT - const.CAR_HEIGHT - 80 # modify this constant to adjust car height
     car = Car(car_img, (const.CAR_WIDTH, const.CAR_HEIGHT),
                 (car_x, car_y), 1, controller)
 

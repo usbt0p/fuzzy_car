@@ -121,18 +121,19 @@ python main.py
 > This section acts as a kind of 'mind dump'. Ideas I may want to include or to study, etc. None of them are mandatory, it's just a guideline.
 
 ### Main functionalities / functional requirements
+- [ ] implement moving to center in fuzzy rules
 - [ ] Adjust spawn rate of obstacles and prevent impossible spawns and blockages:
     - [x] no obstacle overlap
     - [ ] no "barriers": spawns in line that don't leave room for the car to fit between them
     - [ ] set a maximum number of obstacles allowed
-- [ ] Adjust controller: too many obstacles on one side overpower one very close on the other
-- [ ] Adjust defuzz method an possibly some membership functions (change to trapezoidal, move fuzzy numbers)
+- [x] Adjust controller: too many obstacles on one side overpower one very close on the other
+- [x] Adjust defuzz method an possibly some membership functions (change to trapezoidal, move fuzzy numbers)
 - [ ] Write unit tests 
 - [ ] mirar researchgate para cosas de funciones de pertenencia y de defuzz
 - [ ] make a 'obstacle circuit' where the car makes a turn +  barrier mode that spawns barriers with a hole so the car goes into it
 - [x] check what happens if an obstacle is right in front, and neither
     `self.front_x_coords > obstacle.front_x_coords` nor `self.front_x_coords < obstacle.front_x_coords` are true `(d_x, d_y) == (None, None)`.
-- [ ] fix: car still overreacts when obstacle is far away to the side
+- [x] fix: car still overreacts when obstacle is far away to the side
 
 ### Optional requirements / GUI stuff
 - [x] Draw hitboxes to debug possible problems 
