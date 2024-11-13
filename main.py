@@ -64,7 +64,7 @@ def simulate():
 
         score = Environment.spawn_despawn_obstacles(
             obstacles, obstacle_img, score, mode='multi_random_balanced')
-        # simulation can theoretically handle several objects at once
+        # simulation can handle several objects at once
         for obstacle in obstacles:
             obstacle.draw(screen)
 
