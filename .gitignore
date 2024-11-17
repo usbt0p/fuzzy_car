@@ -1,10 +1,6 @@
 # Personal ignores
 car.zip
 imgs/car.png
-docs/*
-!docs/clase3.drawio.png
-!docs/basico.drawio.png
-!docs/simulator_thumbnail.png
 stats.py
 imgs/*.jpg
 
