@@ -7,13 +7,15 @@ class Constants:
     SCREEN_WIDTH = 900
     SCREEN_HEIGHT = 680
     ROAD_WIDTH = 600
-    FPS = 50  # Reduced frame rate
+    FPS = 40  # Reduced frame rate
     # TODO spawn frequency parameter, refactor spawn methods
 
     CAR_WIDTH = 45 # 80
-    CAR_HEIGHT = 85 # 85
+    CAR_HEIGHT = 90 # 85
     OBSTACLE_WIDTH = 70 # 60
-    OBSTACLE_HEIGHT = 70 # 80
+    OBSTACLE_HEIGHT = 55 # 80
+    MAX_OBSTACLES = 5
+    SPAWN_RATE_INVERSE = 50 # 1 out of 50 chance of spawning an obstacle
 
 
 class Colors:
@@ -49,26 +51,36 @@ class Environment:
         now = (pg.time.get_ticks() - start_time) / 1000
 
         if (now) > (last_time + 0.01):
-            #car.random_walk()
-
-
+            #do stuff here
             time_offset = True
 
         return last_time, time_offset
 
     @staticmethod
     def spawn_despawn_obstacles(
-        obstacles : List, img : pg.image, score : int, mode : str, **kwargs) -> int:
-        '''Modifies the passed obstacle list to spawn obstacles according to the 
+        obstacles : List, img : pg.image, score : int, mode : str, **kwargs) ->  int:
+        """
+        Modifies the passed obstacle list to spawn obstacles according to the 
         given `mode` parameter. Returns the score (number of obstacles that got offscreen 
         aka. despawned, without collisions). 
-        `*args` takes an optional car object for the front_of_car mode.
-        Parameters:
-            - `mode` : `{'single_random', 'multi_random', 'multi_random_balanced', 
-                'alternate', 'front_of_car'}`
-        Returns:  
-            - `score` : int  
-        '''
+    
+        Parameters
+        ----------
+        `mode` : str
+            The spawn conditions to enforce when spawning. 
+            
+            Possible values are:
+            `{'single_random', 'multi_random', 'multi_random_balanced', 'alternate', 'front_of_car'}`
+        `**kwargs` : dict
+            Additional keyword arguments to pass to the function. 
+            Required when `mode` is 'front_of_car', must contain the car object.
+        
+        Returns
+        -------
+        int
+            The updated score value after despawning cleared obstacles.
+        
+        """
         # weird circular import issue will give error for this function
         # obstacle.py calls from .entorno import Constants as const
         # environment.py calls from elements.obstacle import Obstacle
@@ -101,33 +113,35 @@ class Environment:
                             (rand_x, -Constants.OBSTACLE_HEIGHT), 7))
 
         elif mode == 'multi_random_balanced':
-
-            # primero, comprobar las zonas que tienen obstáculos con check collision
-            # si no está ahí, hacer que spawnee
-            # otra cosa a comprobar: que no spawneen a una distancia entre ellos de menos de la anchura del coche
             
-            rand_x = randint(
-                    (Constants.SCREEN_WIDTH - Constants.ROAD_WIDTH) // 2,
-                    (Constants.SCREEN_WIDTH + Constants.ROAD_WIDTH) // 2 - Constants.OBSTACLE_WIDTH)
-            y = -Constants.OBSTACLE_HEIGHT 
+            # ensure no more than 5 obstacles are on screen
+            if len(obstacles) < Constants.MAX_OBSTACLES:
+                
 
-            new_obs = Obstacle(img,
-                            (Constants.OBSTACLE_WIDTH, Constants.OBSTACLE_HEIGHT),
-                            (rand_x, y), 7)
+                rand_x = randint(
+                        (Constants.SCREEN_WIDTH - Constants.ROAD_WIDTH) // 2,
+                        (Constants.SCREEN_WIDTH + Constants.ROAD_WIDTH) // 2 - Constants.OBSTACLE_WIDTH)
+                y = -Constants.OBSTACLE_HEIGHT 
 
-            def no_obstacle_overlap(obstacle): # TODO dessign decision: move this to a class method
-                toret = True
+                new_obs = Obstacle(img,
+                                (Constants.OBSTACLE_WIDTH, Constants.OBSTACLE_HEIGHT),
+                                (rand_x, y), 7)
 
-                for obs in obstacles: # FIXME no hace falta hacerlo para todos... solo los que están cerca del inicio!!
-                    if obs.y < Constants.SCREEN_HEIGHT // 4: # esto solo comprueba los que están en el primer cuarto 
-                        if obstacle.check_collision(obs): # obs.check_collision(obstacle) # cambia performance??
-                            toret = False
-                            break
-                return toret
-            
+                def no_obstacle_overlap(obstacle): # TODO dessign decision: move this to a class method
+                    toret = True
 
-            if (no_obstacle_overlap(new_obs) and randint(1, 50)) == 1:  # Adjusted obstacle frequency
-                obstacles.append(new_obs)
+                    for obs in obstacles: 
+                        # esto solo comprueba los que están en el cuarto superior de la pantalla
+                        if obs.y < Constants.SCREEN_HEIGHT // 4:  
+                            if obstacle.check_collision(obs): 
+                                toret = False
+                                break
+                    return toret
+                
+
+                if (no_obstacle_overlap(new_obs) and randint(1, Constants.SPAWN_RATE_INVERSE)) == 1:  
+                    # Adjusted obstacle frequency
+                    obstacles.append(new_obs)
 
         elif mode == 'alternate': # para testear moverse a derecha e izquierda
             if not obstacles:
@@ -167,7 +181,7 @@ class Environment:
     def obstacle_collisions(obstacles, car):
         for obstacle in obstacles:
             if obstacle.check_collision(car):
-                return True  # para running = False
+                return True  # if collision then; running = False
             else:
                 return False
 

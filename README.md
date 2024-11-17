@@ -118,19 +118,29 @@ python main.py
 
 </a>
 
+> This section acts as a kind of 'mind dump'. Ideas I may want to include or to study, etc. None of them are mandatory, it's just a guideline.
 
 ### Main functionalities / functional requirements
+- [ ] make a Road Class that can abstract the real road coords, or figure something out since it's causing inefficiencies an problems: really!! this is important, at least check every part in which the road coordinates are referenced and optimce them
+the problem is that car.x is relative to the screen width, not the road width, so the cars coords on the road must either be processed each time they are to be accessed for use on the road, or they are to be abstracted, so that methods like draw represent the car in screen coords and the others use car.x
+IDEA: check how pygame's surfaces work to use those
+- [ ] logic to make nearest obstacles called only when it's really needed: each time one of the nearest dissapears (a new nearest must be determined)
+- [ ] better performance by decoupling the graphic fps's from the logic ones: make something that only triggers control and nearest obstacles functions each x seconds 
+- [ ] add press q to quit in deathscreen so that you can see the death images and enalize failures
+- [ ] add pause simulation button
+- [ ] implement moving to center in fuzzy rules
 - [ ] Adjust spawn rate of obstacles and prevent impossible spawns and blockages:
     - [x] no obstacle overlap
     - [ ] no "barriers": spawns in line that don't leave room for the car to fit between them
-- [ ] Adjust controller: too many obstacles on one side overpower one very close on the other
-- [ ] Adjust defuzz method an possibly some membership functions (change to trapezoidal, move fuzzy numbers)
+    - [ ] set a maximum number of obstacles allowed
+- [x] Adjust controller: too many obstacles on one side overpower one very close on the other
+- [x] Adjust defuzz method an possibly some membership functions (change to trapezoidal, move fuzzy numbers)
 - [ ] Write unit tests 
 - [ ] mirar researchgate para cosas de funciones de pertenencia y de defuzz
 - [ ] make a 'obstacle circuit' where the car makes a turn +  barrier mode that spawns barriers with a hole so the car goes into it
 - [x] check what happens if an obstacle is right in front, and neither
     `self.front_x_coords > obstacle.front_x_coords` nor `self.front_x_coords < obstacle.front_x_coords` are true `(d_x, d_y) == (None, None)`.
-- [ ] fix: car still overreacts when obstacle is far away to the side
+- [x] fix: car still overreacts when obstacle is far away to the side
 
 ### Optional requirements / GUI stuff
 - [x] Draw hitboxes to debug possible problems 
@@ -140,6 +150,8 @@ python main.py
 - [ ] Randomize obstacle images
 - [ ] modificar las constantes de dimensión para que dependan del obstáculo, si no randomizarlos es imosible
 - [ ] do some typing for the modules
+- [ ] add an argsparser, and take spawn methods as arguments, as well as options for hitboxes, showing sensor views and activating collisions
+- [ ] FIX THIS BUG: using the `front_of_car` argument for the `spawn_despawn_obstacles` method causes the obstacles to spawn NOT in front, but only with certain image sizes for the obstacles and car. Possible fixes: figure out the formula to align both, wich might be impossible for all car/obstacle pairs given the x and y coordinates are integers. Another option would be to force the images to have a certain width ratio with respect to one another, so that the formula can always apply. Finally the easiest is just enforce constant widths, non mutable, and ensure all of them allow the proper center spawn calculations. 
 
 ### Documentation
 - [x] Update documentation with latest changes
@@ -154,6 +166,17 @@ python main.py
     long distances, I simply removed rule 7: ``(distance_side['high'] -> steering['no'])``
     - bug in the sensors: i stopped the y_coords after the front was passed, it
 caused the car to crash from behind upon passing
+    - computer shut off suddenly due to unknown reasons after implementing k nearest obstacles.
+
+### Ideas
+- Several controllers finetuned to specific scenarios. For example one for close and dense vehicle situations, and another one for few vehicles in a long range (avoids preventively).
+- Following this idea, wo could have:
+    - A controller with few and smooth rules that operate for long distances, since far away cases don't need as much precision.
+    - A controller for more close situations (determined by the number of obstacles and their proximity maybe), that would have more rules but would deactivate as soon as the obstacles leave the range.
+- Having the 'higher' parameter only for the most critical rule ensures it will always overpower others even in many vehicle scenarios.
+- Some optimization is needed for the code to work properly. A profiling tool would be useful.
+- It could be smart to make the sensors have a 'radius' that only returns the k nearest obstacle's data.
+- Introducing random noise could be an interesting way of checking other benefits of the fuzzy controller.
 
 <a name="headers"/>
 
