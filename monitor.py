@@ -91,6 +91,8 @@ def display_monitor_text(screen, score):
     score_text2 = font.render(f"cleared:   {score}", True, clrs.BLACK)
     screen.blit(score_text1, (10, 10))
     screen.blit(score_text2, (10, 36))
+    info = distance_font.render("Press 'space' to pause", True, clrs.BLACK)
+    screen.blit(info, (10, 100))
 
 
 def endgame_text(screen, score, start_time):

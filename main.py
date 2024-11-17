@@ -48,9 +48,11 @@ def simulate():
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 running = False
+            elif event.type == pg.KEYDOWN:
+                Environment.pause_with_key(event, pg.K_SPACE)
 
         screen.fill(clrs.GRAY)
-        monitor.draw_road(screen, 4)
+        monitor.draw_road(screen, 3)
 
         # activate sensors
         dist_y, dist_right, dist_left, dist_center = car.get_sensor_measurings(obstacles)

@@ -40,8 +40,21 @@ class Environment:
         self.colors = colors # TODO arerglar esto: todos estan accediendo directamente 
         # a colors y constants cuando deberían acceder a self.colors y self.const
         # TODO self.obstacles = [] # y todos los cambios que esto conlleve
-        
 
+    @staticmethod
+    def pause_with_key(event, key):
+        if event.key == key:
+            flag = True
+            while flag:
+                for event in pg.event.get():
+                    if event.type == pg.KEYDOWN:
+                        if event.key == key:
+                            flag = False
+                    elif event.type == pg.QUIT:
+                        pg.quit()
+                        exit()
+
+    @staticmethod
     def moveInTimeIntervals(car, time_offset, start_time, last_time):
 
         if time_offset:

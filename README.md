@@ -28,7 +28,10 @@ Welcome to the Fuzzy Car Simulator! This project simulates a car controlled by f
 
 The Fuzzy Car Simulator is a Python-based project that uses fuzzy logic to control a car's movement. The car navigates through a simulated environment, avoiding obstacles and responding to sensor inputs. The project leverages the `pygame` library for the simulation and `scikit-fuzzy` for fuzzy logic control.
 
-<img src="docs/simulator_thumbnail.png" width="500">
+<img src="docs/simulator_thumbnail.png" width="400">
+</img>
+
+<img src="docs/simulator_thumbnail_2.png" width="400">
 </img>
 
 <a name="headers"/>
@@ -127,12 +130,12 @@ IDEA: check how pygame's surfaces work to use those
 - [ ] logic to make nearest obstacles called only when it's really needed: each time one of the nearest dissapears (a new nearest must be determined)
 - [ ] better performance by decoupling the graphic fps's from the logic ones: make something that only triggers control and nearest obstacles functions each x seconds 
 - [ ] add press q to quit in deathscreen so that you can see the death images and enalize failures
-- [ ] add pause simulation button
-- [ ] implement moving to center in fuzzy rules
+- [x] add pause simulation button
+- [x] implement moving to center in fuzzy rules
 - [ ] Adjust spawn rate of obstacles and prevent impossible spawns and blockages:
     - [x] no obstacle overlap
     - [ ] no "barriers": spawns in line that don't leave room for the car to fit between them
-    - [ ] set a maximum number of obstacles allowed
+    - [x] set a maximum number of obstacles allowed
 - [x] Adjust controller: too many obstacles on one side overpower one very close on the other
 - [x] Adjust defuzz method an possibly some membership functions (change to trapezoidal, move fuzzy numbers)
 - [ ] Write unit tests 
@@ -148,7 +151,7 @@ IDEA: check how pygame's surfaces work to use those
 - [ ] Make car change angle when turning
 - [ ] Make road lines move for a more dynamic environment
 - [ ] Randomize obstacle images
-- [ ] modificar las constantes de dimensión para que dependan del obstáculo, si no randomizarlos es imosible
+- [x] modificar las constantes de dimensión para que dependan del obstáculo, si no randomizarlos es imosible
 - [ ] do some typing for the modules
 - [ ] add an argsparser, and take spawn methods as arguments, as well as options for hitboxes, showing sensor views and activating collisions
 - [ ] FIX THIS BUG: using the `front_of_car` argument for the `spawn_despawn_obstacles` method causes the obstacles to spawn NOT in front, but only with certain image sizes for the obstacles and car. Possible fixes: figure out the formula to align both, wich might be impossible for all car/obstacle pairs given the x and y coordinates are integers. Another option would be to force the images to have a certain width ratio with respect to one another, so that the formula can always apply. Finally the easiest is just enforce constant widths, non mutable, and ensure all of them allow the proper center spawn calculations. 
@@ -167,16 +170,18 @@ IDEA: check how pygame's surfaces work to use those
     - bug in the sensors: i stopped the y_coords after the front was passed, it
 caused the car to crash from behind upon passing
     - computer shut off suddenly due to unknown reasons after implementing k nearest obstacles.
+    - problems in return to center with road-relative coordinates + clashing rules
+    - introducing k nearest poses the question of what parameters are better
 
 ### Ideas
 - Several controllers finetuned to specific scenarios. For example one for close and dense vehicle situations, and another one for few vehicles in a long range (avoids preventively).
-- Following this idea, wo could have:
+- Following this idea, we could have:
     - A controller with few and smooth rules that operate for long distances, since far away cases don't need as much precision.
     - A controller for more close situations (determined by the number of obstacles and their proximity maybe), that would have more rules but would deactivate as soon as the obstacles leave the range.
 - Having the 'higher' parameter only for the most critical rule ensures it will always overpower others even in many vehicle scenarios.
 - Some optimization is needed for the code to work properly. A profiling tool would be useful.
 - It could be smart to make the sensors have a 'radius' that only returns the k nearest obstacle's data.
-- Introducing random noise could be an interesting way of checking other benefits of the fuzzy controller.
+- Introducing random noise in the sensors could be an interesting way of checking other benefits of the fuzzy controller.
 
 <a name="headers"/>
 
