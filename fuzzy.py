@@ -84,19 +84,20 @@ class FuzzyControl:
         center_distance = np.arange(0, available_road_space//2)
 
         distance_to_center = ctrl.Antecedent(center_distance, 'distance_to_center')
-        steer_center = ctrl.Consequent(steering_universe, 'steer_center', defuzzify_method='bisector')
+        # TODO cambiar defuzz method
+        steer_center = ctrl.Consequent(steering_universe, 'steer_center', defuzzify_method=defuzz_method)
         self.steer_center = steer_center
 
-        distance_to_center.automf(5, variable_type='quant') #variable_type='quant')
+        distance_to_center.automf(4, names=['lower', 'low', 'average', 'high'])#(5, variable_type='quant') #variable_type='quant')
         self.memberships.append(distance_to_center)
         steer_center.automf(4, names=['lower', 'low', 'average', 'high'])
         self.memberships.append(steer_center)
 
-        center_rules = [] #ctrl.Rule(distance_to_center['lower'], steer_center['lower'])
-        center_rules.append(ctrl.Rule(distance_to_center['low'] | distance_to_center['lower'], steer_center['lower']))
+        center_rules = [] 
+        center_rules.append(ctrl.Rule(distance_to_center['low']# | distance_to_center['lower'] 
+                                      , steer_center['lower']))
         center_rules.append(ctrl.Rule(distance_to_center['average'], steer_center['low']))
         center_rules.append(ctrl.Rule(distance_to_center['high'], steer_center['average']))
-        center_rules.append(ctrl.Rule(distance_to_center['higher'], steer_center['high']))
 
         # setup and begin simulation for the center movement controller
         move_to_center_ctrl = ctrl.ControlSystem(center_rules)
@@ -156,19 +157,19 @@ if __name__ == '__main__':
     # 5- ver que se rompe
     # 6- si no funciona separar en otro controlador que se active bajo ciertas condiciones
 
-    '''dists_center = range(0, (
+    dists_center = range(0, (
         ((const.ROAD_WIDTH+1)-const.CAR_WIDTH)//4
             ), 20
         )
     
     for center in dists_center:
         r = control.center_controller(center, debug=True)
-        print(r)'''
+        print(r)
 
     
-    tests = range(0, const.ROAD_WIDTH+1, 100)
+    '''tests = range(0, const.ROAD_WIDTH+1, 100)
     fronts = range(0, const.SCREEN_HEIGHT+1, 150)
 
     for front in fronts:
         r = control.side_controller(50, front, debug=True)
-        print(r)
+        print(r)'''

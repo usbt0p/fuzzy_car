@@ -15,6 +15,7 @@ class Constants:
     OBSTACLE_WIDTH = 70 # 60
     OBSTACLE_HEIGHT = 55 # 80
     MAX_OBSTACLES = 5
+    SPAWN_RATE_INVERSE = 50 # 1 out of 50 chance of spawning an obstacle
 
 
 class Colors:
@@ -50,9 +51,7 @@ class Environment:
         now = (pg.time.get_ticks() - start_time) / 1000
 
         if (now) > (last_time + 0.01):
-            #car.random_walk()
-
-
+            #do stuff here
             time_offset = True
 
         return last_time, time_offset
@@ -140,7 +139,8 @@ class Environment:
                     return toret
                 
 
-                if (no_obstacle_overlap(new_obs) and randint(1, 50)) == 1:  # Adjusted obstacle frequency
+                if (no_obstacle_overlap(new_obs) and randint(1, Constants.SPAWN_RATE_INVERSE)) == 1:  
+                    # Adjusted obstacle frequency
                     obstacles.append(new_obs)
 
         elif mode == 'alternate': # para testear moverse a derecha e izquierda

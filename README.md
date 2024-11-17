@@ -122,7 +122,10 @@ python main.py
 
 ### Main functionalities / functional requirements
 - [ ] make a Road Class that can abstract the real road coords, or figure something out since it's causing inefficiencies an problems: really!! this is important, at least check every part in which the road coordinates are referenced and optimce them
+the problem is that car.x is relative to the screen width, not the road width, so the cars coords on the road must either be processed each time they are to be accessed for use on the road, or they are to be abstracted, so that methods like draw represent the car in screen coords and the others use car.x
+IDEA: check how pygame's surfaces work to use those
 - [ ] logic to make nearest obstacles called only when it's really needed: each time one of the nearest dissapears (a new nearest must be determined)
+- [ ] better performance by decoupling the graphic fps's from the logic ones: make something that only triggers control and nearest obstacles functions each x seconds 
 - [ ] add press q to quit in deathscreen so that you can see the death images and enalize failures
 - [ ] add pause simulation button
 - [ ] implement moving to center in fuzzy rules

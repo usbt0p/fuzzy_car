@@ -56,20 +56,16 @@ def draw_left_sensor(screen, car, obstacle, distance):
         obstacle.x + obstacle.width, obstacle.y + 40))
 
 
-def draw_road(screen):
+def draw_road(screen, num_lanes):
     draw_coords = (const.SCREEN_WIDTH - const.ROAD_WIDTH)
     line_width = 12 #const.ROAD_WIDTH // 40
     line_separation = 50
-    line_height = const.SCREEN_HEIGHT//30
+    line_height = 30
 
     # asphalt
     pg.draw.rect(
         screen, clrs.DARK_GRAY, (draw_coords // 2, 0, const.ROAD_WIDTH, const.SCREEN_HEIGHT))
 
-    # center
-    pg.draw.rect(
-        screen, clrs.DARK_YELLOW, (const.SCREEN_WIDTH//2 # FIXME change so that this can be drawn relative to the road and not the screen
-                             , 0, line_width, const.SCREEN_HEIGHT))
     # right line
     pg.draw.rect(
         screen, clrs.DARK_YELLOW, ((draw_coords//2)+10, 0, line_width, const. SCREEN_HEIGHT))
@@ -78,11 +74,16 @@ def draw_road(screen):
         screen, clrs.DARK_YELLOW, (
             (draw_coords//2)+(const.ROAD_WIDTH-20), 0, line_width, const.SCREEN_HEIGHT))
     
-    # false discontinuous line
-    # TODO hacer que se mueva la linea
-    for i in range(-10, const.SCREEN_HEIGHT, line_separation):
-        pg.draw.rect(screen, clrs.DARK_GRAY,
-                     (const.SCREEN_WIDTH//2, i, line_width, line_height))
+    road_x_origin = (const.SCREEN_WIDTH - const.ROAD_WIDTH)//2 
+    dist_between_lines = const.ROAD_WIDTH // num_lanes
+
+    # discontinuous lines
+    for lane in range(1, num_lanes):
+        # TODO hacer que se mueva la linea
+        for i in range(-10, const.SCREEN_HEIGHT, line_separation):
+            pg.draw.rect(screen, clrs.DARK_YELLOW,
+                        (road_x_origin + dist_between_lines*lane, 
+                         i, line_width, line_height))
 
 
 def display_monitor_text(screen, score):

@@ -85,8 +85,8 @@ class Car(Entity, Sensors):
         for _ in range(0, self.k_nearest):
             index = euclidean_dists.argmin()
             nearest_list.append(obstacles[index])
-            euclidean_dists[index] = float('inf')
-            
+            euclidean_dists[index] = float('inf') # don't pick again
+
         return nearest_list
 
     def control_system(self, dist_y, dist_right, dist_left, dist_center):
@@ -121,6 +121,7 @@ class Car(Entity, Sensors):
             move_amount = int(
                 self.controller.side_controller(side_move, y, debug=False))
             print('movement with side controller: ', move_amount) 
+            print('car x: ', self.front_x_coords, 'dist to center: ', dist_center)
 
             if move_right:
                 self.move_right(times=move_amount)

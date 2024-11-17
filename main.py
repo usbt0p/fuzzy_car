@@ -1,3 +1,5 @@
+from os import environ
+environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
 import pygame as pg
 from elements.car import Car
 import monitor
@@ -24,7 +26,7 @@ def simulate():
     
     # initialize car position and car object
     controller = FuzzyControl('mom') # controller with defuzzification method
-    car_x = (const.SCREEN_WIDTH - const.CAR_WIDTH) // 2
+    car_x = (const.SCREEN_WIDTH - const.CAR_WIDTH) // 2 
     car_y = const.SCREEN_HEIGHT - const.CAR_HEIGHT - 80 # modify this constant to adjust car height
     car = Car(car_img, (const.CAR_WIDTH, const.CAR_HEIGHT),
                 (car_x, car_y), 1, controller)
@@ -35,6 +37,7 @@ def simulate():
     score = 0
     running = True
     Entity._hitbox = False
+    const.SPAWN_RATE_INVERSE = 30
     if ('-h' in commands) or ('--show-hitbox' in commands):
         Entity._hitbox = True
 
@@ -47,7 +50,7 @@ def simulate():
                 running = False
 
         screen.fill(clrs.GRAY)
-        monitor.draw_road(screen)
+        monitor.draw_road(screen, 4)
 
         # activate sensors
         dist_y, dist_right, dist_left, dist_center = car.get_sensor_measurings(obstacles)
