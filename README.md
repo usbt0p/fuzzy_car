@@ -121,6 +121,8 @@ python main.py
 > This section acts as a kind of 'mind dump'. Ideas I may want to include or to study, etc. None of them are mandatory, it's just a guideline.
 
 ### Main functionalities / functional requirements
+- [ ] make a Road Class that can abstract the real road coords, or figure something out since it's causing inefficiencies an problems: really!! this is important, at least check every part in which the road coordinates are referenced and optimce them
+- [ ] logic to make nearest obstacles called only when it's really needed: each time one of the nearest dissapears (a new nearest must be determined)
 - [ ] add press q to quit in deathscreen so that you can see the death images and enalize failures
 - [ ] add pause simulation button
 - [ ] implement moving to center in fuzzy rules

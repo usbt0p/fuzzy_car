@@ -43,12 +43,14 @@ class Car(Entity, Sensors):
 
     def get_sensor_measurings(self, obstacles) -> tuple[list[int]]:
         """Gets measurements from the sensors.
-        - Return order: `(y, right, left)`
+        - Return order: `(y, right, left, center)`
         """
         dist_y = self.obstacle_sensor_y_axis(obstacles)
         dist_right = self.obstacle_sensor_right(obstacles)
         dist_left = self.obstacle_sensor_left(obstacles)
-        return dist_y, dist_right, dist_left
+        dist_center = self.relative_road_location()
+
+        return dist_y, dist_right, dist_left, dist_center
 
     def find_nearest_obstacles(self, obstacles : list, 
                         y_array : list, right : list, left : list) -> list:
@@ -87,7 +89,7 @@ class Car(Entity, Sensors):
             
         return nearest_list
 
-    def control_system(self, dist_y, dist_right, dist_left):
+    def control_system(self, dist_y, dist_right, dist_left, dist_center):
         '''Provides the needed logic to connect the sensors
         to the fuzzy control system. These are the steps:
         1. Get the distance from the sensors
@@ -95,6 +97,7 @@ class Car(Entity, Sensors):
         3. Get the output from the controller
         4. Move the car according to the output
         '''
+        move_amount = 0
         move_right = True 
         for y, r, l in zip(dist_y, dist_right, dist_left):
             # take the side measurements from the sensors and pass the proper one to the controller
@@ -117,11 +120,27 @@ class Car(Entity, Sensors):
 
             move_amount = int(
                 self.controller.side_controller(side_move, y, debug=False))
+            print('movement with side controller: ', move_amount) 
 
             if move_right:
                 self.move_right(times=move_amount)
             else:
                 self.move_left(times=move_amount)
+
+        # TODO cambiar condicion para que se dispare esto: igual si no hay obstáculos en un rango
+        # por ejemplo si los n más cercani están a más de x de distancia
+        if move_amount == 0: # if there's no activation in the side controllers, return to center
+                
+            move_amount = int(self.controller.center_controller(dist_center))
+            print('movement on car: ', move_amount)
+                        
+            center = (const.SCREEN_WIDTH - const.CAR_WIDTH) // 2
+            if self.front_x_coords > center:
+                self.move_left(times=move_amount)
+            elif self.front_x_coords < center:
+                self.move_right(times=move_amount)
+            else: 
+                print(f'Unexpected value un center move: {self.front_x_coords}')
 
 # TODO crear una función de nearest_point? para que no vaya al centro, si no
 # al punto más cercano del obstáculo, como un sensor real...

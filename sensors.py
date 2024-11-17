@@ -40,13 +40,15 @@ class Sensors:
     
     def relative_road_location(self):
         """Returns the distance from the center of the road to the car's front"""
-        return abs(const.ROAD_WIDTH // 2 - self.front_x_coords)
+        # the x coordinate of the leftmost point of the road, or origin
+        road_x_origin = (const.SCREEN_WIDTH - const.ROAD_WIDTH)//2 
+        return abs(self.front_x_coords - (road_x_origin + const.ROAD_WIDTH // 2 ))
     
 
 if __name__ == '__main__':
     from elements.car import Car
     from elements.obstacle import Obstacle
-    car = Car(None, (20, 50), (0, 0), 20, None)
+    car = Car(None, (0,0), (100, 0), 1, None)
 
     print('road width:', const.ROAD_WIDTH)
     print('half road width:', const.ROAD_WIDTH // 2)
@@ -54,5 +56,11 @@ if __name__ == '__main__':
     print('car x: ', car.x)
     dist_to_center = car.relative_road_location()
     print('car dist to center:', dist_to_center)
+
+    car.move_right(400)
+    print('car x: ', car.x)
+    dist_to_center = car.relative_road_location()
+    print('car dist to center:', dist_to_center)
+
 
 

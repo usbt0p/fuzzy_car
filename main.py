@@ -50,14 +50,13 @@ def simulate():
         monitor.draw_road(screen)
 
         # activate sensors
-        dist_y, dist_right, dist_left = car.get_sensor_measurings(obstacles)
+        dist_y, dist_right, dist_left, dist_center = car.get_sensor_measurings(obstacles)
         
         # TODO mejora de rendimiento -> hacerlo cada x frames en vez de cada frame
         nearest_obstacles = car.find_nearest_obstacles(
             obstacles, dist_y, dist_right, dist_left)
         
-        if nearest_obstacles: # FIXME este parche
-            car.control_system(dist_y, dist_right, dist_left)
+        car.control_system(dist_y, dist_right, dist_left, dist_center)
 
         car.manual_control(7) # for demo purposes; this can be commented if you don't want to control it
         
