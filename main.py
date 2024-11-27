@@ -92,7 +92,7 @@ def simulate():
         pg.display.flip()
         clock.tick(const.FPS)
 
-    monitor.endgame_text(screen, score, start_time)
+    monitor.you_died(screen, score, start_time)
     pg.display.flip()
 
     flag = True

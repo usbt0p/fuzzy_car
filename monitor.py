@@ -114,6 +114,37 @@ def endgame_text(screen, score, start_time):
     time_text = font.render(f"Time: {elapsed_time} seconds", True, clrs.WHITE)
     screen.blit(time_text, (const.SCREEN_WIDTH //
                 2 - 100, const.SCREEN_HEIGHT // 2))
+    
+def you_died(screen, score, start_time):   
+    road_half_y = const.SCREEN_HEIGHT//2
+    road_origin = (const.SCREEN_WIDTH - const.ROAD_WIDTH) // 2
+
+    # draw dark souls you died image
+    you_died = pg.image.load('imgs/you_died.png')
+    you_died = pg.transform.scale(
+        you_died, (const.ROAD_WIDTH, you_died.get_height()))
+    screen.blit(you_died, 
+            (road_origin, road_half_y))
+    
+    # play dark souls death sound
+    pg.mixer.init() 
+    pg.mixer.music.load("imgs\dark-souls-you-died-sound-effect.mp3") 
+    pg.mixer.music.set_volume(0.9) 
+    pg.mixer.music.play() 
+    
+    textbox = (road_origin + 202, road_half_y - 85)          
+    pg.draw.rect(screen, (0, 0, 0), 
+        (textbox[0], textbox[1], 210, 80))
+
+    final_score_text = font.render(f"Final Score: {score}", True, clrs.WHITE)
+    screen.blit(final_score_text, 
+                (textbox[0] + 10 , textbox[1] + 10))
+
+    # Calculate and display play time
+    elapsed_time = (pg.time.get_ticks() - start_time) // 1000  # in seconds
+    time_text = font.render(f"Time: {elapsed_time} seconds", True, clrs.WHITE)
+    screen.blit(time_text, 
+        (textbox[0] + 10 , textbox[1] + 40))
 
 
 if __name__ == "__main__":

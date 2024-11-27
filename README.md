@@ -124,6 +124,7 @@ python main.py
 > This section acts as a kind of 'mind dump'. Ideas I may want to include or to study, etc. None of them are mandatory, it's just a guideline.
 
 ### Main functionalities / functional requirements
+- [ ]: refactor monitor into a class, make init, pass the screen and let functions use it
 - [ ] error case: el coche choca por detrás cuando tiene que hacer zigzag, porque como solo
 mide la distancia hasta el frente, la distancia de atras le parece despreciable
 - [ ] make a Road Class that can abstract the real road coords, or figure something out since it's causing inefficiencies an problems: really!! this is important, at least check every part in which the road coordinates are referenced and optimce them
