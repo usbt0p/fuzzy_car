@@ -30,7 +30,7 @@ def simulate():
     car_y = const.SCREEN_HEIGHT - const.CAR_HEIGHT - 80 # modify this constant to adjust car height
     car = Car(car_img, (const.CAR_WIDTH, const.CAR_HEIGHT),
                 (car_x, car_y), 1, controller)
-    car.k_nearest = 2
+    car.k_nearest = 5
 
     # decalre list(Obstacle()) and simulation constants
     obstacles = []
@@ -38,6 +38,7 @@ def simulate():
     running = True
     Entity._hitbox = False
     const.SPAWN_RATE_INVERSE = 30
+    const.FPS = 30
     if ('-h' in commands) or ('--show-hitbox' in commands):
         Entity._hitbox = True
 
@@ -86,7 +87,7 @@ def simulate():
                 running = True
             running = False
 
-        monitor.display_monitor_text(screen, score)
+        monitor.display_monitor_text(screen, score, clock.get_fps())
 
         pg.display.flip()
         clock.tick(const.FPS)

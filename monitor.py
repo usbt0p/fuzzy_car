@@ -5,6 +5,7 @@ from elements.environment import Constants as const
 pg.font.init()
 
 font = pg.font.Font(None, 36)
+medium_font = pg.font.Font(None, 26)
 distance_font = pg.font.SysFont(None, 20)
 
 car_img = pg.image.load('imgs/white_car.png')
@@ -86,13 +87,17 @@ def draw_road(screen, num_lanes):
                          i, line_width, line_height))
 
 
-def display_monitor_text(screen, score):
+def display_monitor_text(screen, score, fps):
     score_text1 = font.render(f"Obstacles", True, clrs.BLACK)
     score_text2 = font.render(f"cleared:   {score}", True, clrs.BLACK)
     screen.blit(score_text1, (10, 10))
     screen.blit(score_text2, (10, 36))
     info = distance_font.render("Press 'space' to pause", True, clrs.BLACK)
     screen.blit(info, (10, 100))
+
+    fps_text = medium_font.render(f"FPS={fps:.2f}", True, clrs.BLACK)
+    fps_offset = fps_text.get_width()
+    screen.blit(fps_text, (const.SCREEN_WIDTH-fps_offset, 10))
 
 
 def endgame_text(screen, score, start_time):

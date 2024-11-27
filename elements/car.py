@@ -98,6 +98,7 @@ class Car(Entity, Sensors):
         4. Move the car according to the output
         '''
         move_amount = 0
+        total_move = 0
         move_right = True 
         for y, r, l in zip(dist_y, dist_right, dist_left):
             # take the side measurements from the sensors and pass the proper one to the controller
@@ -120,20 +121,18 @@ class Car(Entity, Sensors):
 
             move_amount = int(
                 self.controller.side_controller(side_move, y, debug=False))
-            print('movement with side controller: ', move_amount) 
-            print('car x: ', self.front_x_coords, 'dist to center: ', dist_center)
+            total_move += move_amount
 
             if move_right:
                 self.move_right(times=move_amount)
             else:
                 self.move_left(times=move_amount)
 
-        # TODO cambiar condicion para que se dispare esto: igual si no hay obstáculos en un rango
-        # por ejemplo si los n más cercani están a más de x de distancia
-        if move_amount == 0: # if there's no activation in the side controllers, return to center
+        # TODO cambiar lógica de esto: move amount queda determinado por el último sensor
+        if total_move == 0: # if there's no activation in the side controllers, return to center
                 
             move_amount = int(self.controller.center_controller(dist_center))
-            print('movement on car: ', move_amount)
+            #print('movement on car: ', move_amount)
                         
             center = (const.SCREEN_WIDTH - const.CAR_WIDTH) // 2
             if self.front_x_coords > center:
@@ -142,10 +141,6 @@ class Car(Entity, Sensors):
                 self.move_right(times=move_amount)
             else: 
                 print(f'Unexpected value un center move: {self.front_x_coords}')
-
-# TODO crear una función de nearest_point? para que no vaya al centro, si no
-# al punto más cercano del obstáculo, como un sensor real...
-
 
 if __name__ == '__main__':
     # to run as a module:

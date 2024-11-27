@@ -124,6 +124,8 @@ python main.py
 > This section acts as a kind of 'mind dump'. Ideas I may want to include or to study, etc. None of them are mandatory, it's just a guideline.
 
 ### Main functionalities / functional requirements
+- [ ] error case: el coche choca por detrás cuando tiene que hacer zigzag, porque como solo
+mide la distancia hasta el frente, la distancia de atras le parece despreciable
 - [ ] make a Road Class that can abstract the real road coords, or figure something out since it's causing inefficiencies an problems: really!! this is important, at least check every part in which the road coordinates are referenced and optimce them
 the problem is that car.x is relative to the screen width, not the road width, so the cars coords on the road must either be processed each time they are to be accessed for use on the road, or they are to be abstracted, so that methods like draw represent the car in screen coords and the others use car.x
 IDEA: check how pygame's surfaces work to use those
