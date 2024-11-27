@@ -30,7 +30,7 @@ def simulate():
     car_y = const.SCREEN_HEIGHT - const.CAR_HEIGHT - 80 # modify this constant to adjust car height
     car = Car(car_img, (const.CAR_WIDTH, const.CAR_HEIGHT),
                 (car_x, car_y), 1, controller)
-    car.k_nearest = 5
+    car.k_nearest = 2
 
     # decalre list(Obstacle()) and simulation constants
     obstacles = []
@@ -93,9 +93,16 @@ def simulate():
         clock.tick(const.FPS)
 
     monitor.endgame_text(screen, score, start_time)
-
     pg.display.flip()
-    pg.time.wait(2500)  # Display final screen for 1 seconds
+
+    flag = True
+    while flag: # pause until user presses a key or closes the window
+        for event in pg.event.get():
+            if event.type == pg.KEYDOWN:
+                flag = False
+            elif event.type == pg.QUIT:
+                pg.quit()
+                exit()
 
     pg.quit()
 
