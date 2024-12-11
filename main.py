@@ -26,8 +26,8 @@ def simulate():
     
     # initialize car position and car object
     controller = FuzzyControl('mom') # controller with defuzzification method
-    car_x = (const.SCREEN_WIDTH - const.CAR_WIDTH) // 2 
-    car_y = const.SCREEN_HEIGHT - const.CAR_HEIGHT - 80 # modify this constant to adjust car height
+    car_x = 0 #(const.SCREEN_WIDTH - const.CAR_WIDTH) // 2 
+    car_y = 500 # modify this constant to adjust car height
     car = Car(car_img, (const.CAR_WIDTH, const.CAR_HEIGHT),
                 (car_x, car_y), 1, controller)
     car.k_nearest = 2
@@ -69,7 +69,7 @@ def simulate():
         car.draw(screen)
 
         score = Environment.spawn_despawn_obstacles(
-            obstacles, obstacle_img, score, mode='multi_random_balanced')
+            obstacles, obstacle_img, score, mode='single_random')
         # simulation can handle several objects at once
         for obstacle in obstacles:
             obstacle.draw(screen)

@@ -7,8 +7,15 @@ class Constants:
     SCREEN_WIDTH = 900
     SCREEN_HEIGHT = 680
     ROAD_WIDTH = 600
+    ROAD_HEIGHT = 680
     FPS = 40  # Reduced frame rate
     # TODO spawn frequency parameter, refactor spawn methods
+    assert ROAD_HEIGHT == SCREEN_HEIGHT
+
+    ROAD_ORIGIN_X = (SCREEN_WIDTH - ROAD_WIDTH) // 2
+    ROAD_END_X = ROAD_ORIGIN_X + ROAD_WIDTH
+    ROAD_ORIGIN_Y = (SCREEN_HEIGHT - ROAD_HEIGHT) // 2
+    ROAD_END_Y = ROAD_ORIGIN_Y + ROAD_HEIGHT
 
     CAR_WIDTH = 45 # 80
     CAR_HEIGHT = 90 # 85
@@ -105,9 +112,7 @@ class Environment:
         if mode == 'single_random':
             if not obstacles:
 
-                rand_x = randint(
-                    (Constants.SCREEN_WIDTH - Constants.ROAD_WIDTH) // 2,
-                    (Constants.SCREEN_WIDTH + Constants.ROAD_WIDTH) // 2 - Constants.OBSTACLE_WIDTH)
+                rand_x = randint(0, Constants.ROAD_WIDTH - Constants.OBSTACLE_WIDTH)
 
                 new_obs = Obstacle(img,
                             (Constants.OBSTACLE_WIDTH, Constants.OBSTACLE_HEIGHT),

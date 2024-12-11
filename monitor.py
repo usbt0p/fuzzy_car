@@ -58,22 +58,22 @@ def draw_left_sensor(screen, car, obstacle, distance):
 
 
 def draw_road(screen, num_lanes):
-    draw_coords = (const.SCREEN_WIDTH - const.ROAD_WIDTH)
+    draw_coords = (const.SCREEN_WIDTH - const.ROAD_WIDTH)// 2
     line_width = 12 #const.ROAD_WIDTH // 40
     line_separation = 50
     line_height = 30
 
     # asphalt
     pg.draw.rect(
-        screen, clrs.DARK_GRAY, (draw_coords // 2, 0, const.ROAD_WIDTH, const.SCREEN_HEIGHT))
+        screen, clrs.DARK_GRAY, (draw_coords, 0, const.ROAD_WIDTH, const.SCREEN_HEIGHT))
 
     # right line
     pg.draw.rect(
-        screen, clrs.DARK_YELLOW, ((draw_coords//2)+10, 0, line_width, const. SCREEN_HEIGHT))
+        screen, clrs.DARK_YELLOW, ((draw_coords)+10, 0, line_width, const. SCREEN_HEIGHT))
     # left line
     pg.draw.rect(
         screen, clrs.DARK_YELLOW, (
-            (draw_coords//2)+(const.ROAD_WIDTH-20), 0, line_width, const.SCREEN_HEIGHT))
+            (draw_coords)+(const.ROAD_WIDTH-20), 0, line_width, const.SCREEN_HEIGHT))
     
     road_x_origin = (const.SCREEN_WIDTH - const.ROAD_WIDTH)//2 
     dist_between_lines = const.ROAD_WIDTH // num_lanes
@@ -128,7 +128,7 @@ def you_died(screen, score, start_time):
     
     # play dark souls death sound
     pg.mixer.init() 
-    pg.mixer.music.load("imgs\dark-souls-you-died-sound-effect.mp3") 
+    pg.mixer.music.load("imgs/dark-souls-you-died-sound-effect.mp3") 
     pg.mixer.music.set_volume(0.9) 
     pg.mixer.music.play() 
     

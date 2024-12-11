@@ -1,4 +1,5 @@
 from .environment import Colors as clrs
+from .environment import Constants as const
 import pygame as pg
 
 
@@ -17,13 +18,36 @@ class Entity:
     def draw(self, screen):
         if self.image is None:
             pg.draw.rect(
-                screen, clrs.RED, (self.x, self.y, self.width, self.height))
+                screen, 
+                clrs.RED, 
+                # upper left corner 
+                (self.x + const.ROAD_ORIGIN_X, 
+                 self.y + const.ROAD_ORIGIN_Y, 
+                 self.width, 
+                 self.height) # lower right corner
+            )
         else:
-            screen.blit(self.image, (self.x, self.y))
+            screen.blit(self.image, 
+                (self.x + const.ROAD_ORIGIN_X, 
+                self.y + const.ROAD_ORIGIN_Y)
+                )
 
         if Entity._hitbox:
             pg.draw.rect(
-                screen, clrs.GREEN, (self.x, self.y, self.width, self.height), 1)
+                    screen, 
+                    clrs.GREEN, 
+                    (self.x + const.ROAD_ORIGIN_X, 
+                     self.y + const.ROAD_ORIGIN_Y, 
+                    self.width, 
+                    self.height), 
+                    1)
+            
+
+if __name__ == '__main__':
+
+    def test_hitbox_change():
+        pass
+
             
 
 

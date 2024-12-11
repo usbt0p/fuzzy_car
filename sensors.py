@@ -41,23 +41,28 @@ class Sensors:
     def relative_road_location(self):
         """Returns the distance from the center of the road to the car's front"""
         # the x coordinate of the leftmost point of the road, or origin
-        road_x_origin = (const.SCREEN_WIDTH - const.ROAD_WIDTH)//2 
-        return abs(self.front_x_coords - (road_x_origin + const.ROAD_WIDTH // 2 ))
-    
+        #road_x_origin = (const.SCREEN_WIDTH - const.ROAD_WIDTH)//2 
+        #return abs(self.front_x_coords - (road_x_origin + const.ROAD_WIDTH // 2 ))
+        return abs( (const.ROAD_WIDTH // 2) - self.x )
 
 if __name__ == '__main__':
     from elements.car import Car
     from elements.obstacle import Obstacle
-    car = Car(None, (0,0), (100, 0), 1, None)
+
+    car = Car(None, (0,0), (0, 0), 1, None)
 
     print('road width:', const.ROAD_WIDTH)
     print('half road width:', const.ROAD_WIDTH // 2)
-
+    road_x_origin = (const.SCREEN_WIDTH - const.ROAD_WIDTH)//2 
+    print('road origin with respect to screen:', road_x_origin)
     print('car x: ', car.x)
+    # FIXME: el coche se dibuja relativo al origen de la pantalla y no al de la carretera
     dist_to_center = car.relative_road_location()
-    print('car dist to center:', dist_to_center)
+    print('car dist to center:', dist_to_center, end='\n\n')
 
-    car.move_right(400)
+    mov = 150
+    car.move_right(mov)
+    print(f'moving {mov} to the right')
     print('car x: ', car.x)
     dist_to_center = car.relative_road_location()
     print('car dist to center:', dist_to_center)
