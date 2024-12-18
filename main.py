@@ -46,12 +46,12 @@ def simulate():
 
     # decalre list(Obstacle()) and simulation constants
     obstacles = []
-    const.MAX_OBSTACLES = 6
+    const.MAX_OBSTACLES = 5
     score = 0
     running = True
     Entity._hitbox = False
     const.SPAWN_RATE_INVERSE = 30
-    const.FPS = 30
+    const.FPS = 40
     if ('-h' in commands) or ('--show-hitbox' in commands):
         Entity._hitbox = True
 

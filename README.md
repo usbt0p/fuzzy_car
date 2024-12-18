@@ -2,6 +2,8 @@
 
 Welcome to the Fuzzy Car Simulator! This project simulates a car controlled by fuzzy logic, navigating through obstacles in a pygame environment.
 
+Skip right to the [installation](#installation) and [usage](#usage) sections to get started, or read on to learn more about the project.
+
 ## In this readme: 
 
 0. [State](#state)
@@ -18,7 +20,15 @@ Welcome to the Fuzzy Car Simulator! This project simulates a car controlled by f
 ## State
 </a>
 
-> Still in development! For now, this is a functioning prototype. Fuzzy rules are still being adjusted, so the car doesn't respond as well as it should.
+> [!NOTE] The fuzzy logic controller is implemented and the car can navigate through obstacles. 
+It's not meant to be perfect, but it's a good starting point for further development. 
+>
+>Fuzzy rule system was made as per class instructions, but maybe there are some better
+tools to use for this kind of task.
+
+Feel free to contribute to the project by forking it and submitting a pull request. There are 
+plenty of ideas and improvements that can be made that I gathered as I developed this. 
+Check the [TODO's](#todos) section for more information.
 
 <a name="headers"/>
 
@@ -86,12 +96,12 @@ To run the Fuzzy Car Simulator, you need to have Python installed on your system
 
 </a>
 
-For correct usage now the user should add the project directory to
+> [!IMPORTANT] For correct usage now the user may need to add the project directory to
 the environment variable `PYTHONPATH` so that Python knows where
 to search for the executable files.
 
-One way of doing it is this, do the following after downoading
-the project:
+Try to execute the `main.py` file first without it, and if it doesn't work, then do the following:
+
 - Go, through command line, to the root directory in which the project
 was downloaded in your PC.
 For example if you downloaded it to ``C:\user\documents``, go to
@@ -113,17 +123,34 @@ path of the directory.
 To start the simulation, run the `main.py` file:
 
 ```sh
-python main.py
+python3 main.py
 ```
+
+### Command Line Arguments
+
+You can pass the following command line arguments to customize the simulation:
+
+- `-h` or `--show-hitbox`: Show the hitboxes of the car and obstacles.
+- `-s` or `--show-sensors`: Display the sensor measurements.
+- `-nc` or `--no-collision`: Disable collision detection.
+- `--ds-death`: Display a "You Died" screen when the car crashes.
+
+Example usage:
+
+```sh
+python3 main.py -h -s --ds-death
+```
+
 <a name="headers"/>
 
 ## TODO's
 
 </a>
 
-> This section acts as a kind of 'mind dump'. Ideas I may want to include or to study, etc. None of them are mandatory, it's just a guideline.
+> [!TIP] This section acts as a kind of 'mind dump'. Ideas I may want to include or to study, etc. None of them are mandatory, it's just a guideline.
 
-### Main functionalities / functional requirements
+### Additional functionalities and fixes
+- [ ]: optimize to run at stable framerates
 - [ ]: refactor monitor into a class, make init, pass the screen and let functions use it
 - [ ] error case: el coche choca por detrás cuando tiene que hacer zigzag, porque como solo
 mide la distancia hasta el frente, la distancia de atras le parece despreciable
@@ -148,7 +175,7 @@ IDEA: check how pygame's surfaces work to use those
     `self.front_x_coords > obstacle.front_x_coords` nor `self.front_x_coords < obstacle.front_x_coords` are true `(d_x, d_y) == (None, None)`.
 - [x] fix: car still overreacts when obstacle is far away to the side
 
-### Optional requirements / GUI stuff
+### Optional stuff / GUI stuff
 - [x] Draw hitboxes to debug possible problems 
 - [x] Fix bad road drawing when resizing window 
 - [ ] Make car change angle when turning
@@ -158,23 +185,6 @@ IDEA: check how pygame's surfaces work to use those
 - [ ] do some typing for the modules
 - [ ] add an argsparser, and take spawn methods as arguments, as well as options for hitboxes, showing sensor views and activating collisions
 - [ ] FIX THIS BUG: using the `front_of_car` argument for the `spawn_despawn_obstacles` method causes the obstacles to spawn NOT in front, but only with certain image sizes for the obstacles and car. Possible fixes: figure out the formula to align both, wich might be impossible for all car/obstacle pairs given the x and y coordinates are integers. Another option would be to force the images to have a certain width ratio with respect to one another, so that the formula can always apply. Finally the easiest is just enforce constant widths, non mutable, and ensure all of them allow the proper center spawn calculations. 
-
-### Documentation
-- [x] Update documentation with latest changes
-- [x] Add image to readme
-- [ ] Document problems: 
-    - rules are hard to tame: separated right from left, order matters
-    - more variables than initially expected (return to center, etc.)
-    - choosing the right membership functions depends on the desired behavior
-    - choosing the rules is a bit of a trial and error process, and changes with the MFs
-    - fix moving too soon and moving when not needed (dist_x big or dist_y big)
-    - sometimes, less rules is better. To remove the issue where the car over reacted at
-    long distances, I simply removed rule 7: ``(distance_side['high'] -> steering['no'])``
-    - bug in the sensors: i stopped the y_coords after the front was passed, it
-caused the car to crash from behind upon passing
-    - computer shut off suddenly due to unknown reasons after implementing k nearest obstacles.
-    - problems in return to center with road-relative coordinates + clashing rules
-    - introducing k nearest poses the question of what parameters are better
 
 ### Ideas
 - Several controllers finetuned to specific scenarios. For example one for close and dense vehicle situations, and another one for few vehicles in a long range (avoids preventively).
@@ -213,6 +223,8 @@ Things I learned while doing this project:
     First, there can be a huge combinatorial explosion of rules that have to be defined if one chooses several antecedents and consequents, moreso if each one has a high amount of membership functions.
 
     Then there is the issue of testing and debugging. Since the only way to check if the rules are correct in *any scenario* is by trial and error + gradual improvement, testing and adjusting takes a lot of time.
+
+
 
 
 
