@@ -20,10 +20,10 @@ Skip right to the [installation](#installation) and [usage](#usage) sections to 
 ## State
 </a>
 
-> [!NOTE] The fuzzy logic controller is implemented and the car can navigate through obstacles. 
->It's not meant to be perfect, but it's a good starting point for further development. 
+> [!NOTE] 
+> The fuzzy logic controller is implemented and the car can navigate through obstacles. It's not meant to be perfect, but it's a good starting point for further development. 
 >
->Fuzzy rule system was made as per class instructions, but maybe there are some better tools to use for this kind of task.
+> Fuzzy rule system was made as per class instructions, but maybe there are some better tools to use for this kind of task.
 
 Feel free to contribute to the project by forking it and submitting a pull request. There are 
 plenty of ideas and improvements that can be made that I gathered as I developed this. 
@@ -95,7 +95,8 @@ To run the Fuzzy Car Simulator, you need to have Python installed on your system
 
 </a>
 
-> [!IMPORTANT] For correct usage now the user may need to add the project directory to the environment variable `PYTHONPATH` so that Python knows where to search for the executable files.
+> [!IMPORTANT] 
+> For correct usage now the user may need to add the project directory to the environment variable `PYTHONPATH` so that Python knows where to search for the executable files.
 
 Try to execute the `main.py` file first without it, and if it doesn't work, then do the following:
 
@@ -144,7 +145,8 @@ python3 main.py -h -s --ds-death
 
 </a>
 
-> [!TIP] This section acts as a kind of 'mind dump'. Ideas I may want to include or to study, etc. None of them are mandatory, it's just a guideline.
+> [!TIP] 
+> This section acts as a kind of 'mind dump'. Ideas I may want to include or to study, etc. None of them are mandatory, it's just a guideline.
 
 ### Additional functionalities and fixes
 - [ ]: optimize to run at stable framerates
