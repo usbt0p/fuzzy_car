@@ -83,27 +83,40 @@ def simulate():
                 monitor.draw_left_sensor(screen, car, obstacle, d_x_l)
 
         collision = Environment.obstacle_collisions(obstacles, car)
+
         if collision:
             if ('-nc' in commands) or ('--no-collision' in commands):
                 running = True
-            running = False
+            #running = False
+
+            if ('--ds-death' in commands):
+                monitor.you_died(screen, score, start_time)
+            else:
+                monitor.endgame_text(screen, score, start_time)
+
+            pg.display.flip()
+
+            flag = True
+            while flag: # pause until user presses a key or closes the window
+                for event in pg.event.get():
+                    if event.type == pg.KEYDOWN:
+                        # if key is enter, running is true
+                        if event.key == pg.K_RETURN:
+                            obstacles = []
+                            running = True
+                        else:
+                            running = False
+                        flag = False
+                    elif event.type == pg.QUIT:
+                        pg.quit()
+                        exit()
 
         monitor.display_monitor_text(screen, score, clock.get_fps())
 
         pg.display.flip()
         clock.tick(const.FPS)
 
-    monitor.you_died(screen, score, start_time)
-    pg.display.flip()
-
-    flag = True
-    while flag: # pause until user presses a key or closes the window
-        for event in pg.event.get():
-            if event.type == pg.KEYDOWN:
-                flag = False
-            elif event.type == pg.QUIT:
-                pg.quit()
-                exit()
+    
 
     pg.quit()
 
