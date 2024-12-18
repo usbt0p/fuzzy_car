@@ -2,10 +2,8 @@ from elements.environment import Constants as const
 
 
 class Sensors:
-    # TODO test
     def obstacle_sensor_y_axis(self, obstacles):
         distances = []  # una lista ya que podría querer computarlo para mas de un obstáculo
-        # TODO poner un if para casos en los que no haya obstaculo en frente
         for obstacle in obstacles:
             # el sensor no se para cuando el obstaculo esta detrás
                 distance_y_axis = abs(
@@ -13,7 +11,6 @@ class Sensors:
                 distances.append(distance_y_axis)
         return distances
     
-    # TODO test
     def obstacle_sensor_right(self, obstacles):
         distances = []
 
@@ -25,7 +22,6 @@ class Sensors:
                 distances.append(None) 
 
         return distances
-    # TODO test
     def obstacle_sensor_left(self, obstacles):
         distances = []
 

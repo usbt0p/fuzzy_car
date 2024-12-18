@@ -75,11 +75,10 @@ class FuzzyControl:
         center_distance = np.arange(0, available_road_space//2)
 
         distance_to_center = ctrl.Antecedent(center_distance, 'distance_to_center')
-        # TODO cambiar defuzz method
         steer_center = ctrl.Consequent(steering_universe, 'steer_center', defuzzify_method=defuzz_method)
         self.steer_center = steer_center
 
-        distance_to_center.automf(4, names=['lower', 'low', 'average', 'high'])#(5, variable_type='quant') #variable_type='quant')
+        distance_to_center.automf(4, names=['lower', 'low', 'average', 'high'])
         self.memberships.append(distance_to_center)
         steer_center.automf(4, names=['lower', 'low', 'average', 'high'])
         self.memberships.append(steer_center)

@@ -8,12 +8,11 @@ class Constants:
     SCREEN_HEIGHT = 680
     ROAD_WIDTH = 600
     FPS = 40  # Reduced frame rate
-    # TODO spawn frequency parameter, refactor spawn methods
 
-    CAR_WIDTH = 45 # 80
-    CAR_HEIGHT = 90 # 85
-    OBSTACLE_WIDTH = 70 # 60
-    OBSTACLE_HEIGHT = 55 # 80
+    CAR_WIDTH = 45
+    CAR_HEIGHT = 90
+    OBSTACLE_WIDTH = 70
+    OBSTACLE_HEIGHT = 55
     MAX_OBSTACLES = 5
     SPAWN_RATE_INVERSE = 50 # 1 out of 50 chance of spawning an obstacle
 
@@ -56,7 +55,7 @@ class Environment:
 
     @staticmethod
     def moveInTimeIntervals(car, time_offset, start_time, last_time):
-
+        '''Legacy method for moving the car + doing other stuff in intervals'''
         if time_offset:
             last_time = (pg.time.get_ticks() - start_time) / 1000
             time_offset = False
@@ -99,8 +98,7 @@ class Environment:
         # environment.py calls from elements.obstacle import Obstacle
         # therefore one must call the other, cycle in dependency tree leads to error
         from .obstacle import Obstacle
-        
-        # TODO test
+
         # make them appear only one at a time constantly
         if mode == 'single_random':
             if not obstacles:
@@ -140,7 +138,7 @@ class Environment:
                                 (Constants.OBSTACLE_WIDTH, Constants.OBSTACLE_HEIGHT),
                                 (rand_x, y), 7)
 
-                def no_obstacle_overlap(obstacle): # TODO dessign decision: move this to a class method
+                def no_obstacle_overlap(obstacle):
                     toret = True
 
                     for obs in obstacles: 
@@ -190,7 +188,6 @@ class Environment:
                 score += 1
         return score
 
-    # TODO test
     def obstacle_collisions(obstacles, car):
         for obstacle in obstacles:
             if obstacle.check_collision(car):

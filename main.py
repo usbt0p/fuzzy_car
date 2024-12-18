@@ -23,6 +23,18 @@ pg.display.set_caption("Simulador de Control de coche con lógica difusa")
 # Simulation loop
 
 def simulate():
+    '''Main simulation loop. It handles the sim loop and the game over screen.
+    
+    The simulation loop is the main loop that handles the game logic. It is
+    responsible for handling the car's control system, the obstacles, the
+    sensors, and the game over screen. It also handles the game's pause
+    functionality and the game's end.
+    
+    You can modify the simulation loop by declaring different constants in the 
+    section below. For references of what you can change, see the constants in
+    elements/environment.py as well as the functions in elements/environment.py, 
+    and constructor values for car class and monitor methods.
+    '''
     
     # initialize car position and car object
     controller = FuzzyControl('mom') # controller with defuzzification method
@@ -94,6 +106,7 @@ def simulate():
         clock.tick(const.FPS)
 
     if ('--ds-death' in commands):
+        # a small easter egg for dark souls fans
         monitor.you_died(screen, score, start_time)
     else:
         monitor.endgame_text(screen, score, start_time)

@@ -12,7 +12,7 @@ class Entity:
         self.height = dims[1]
         self.x = coords[0]
         self.y = coords[1]
-        self.speed = speed  # could vary between horizontal and vertical
+        self.speed = speed 
 
     def draw(self, screen):
         if self.image is None:

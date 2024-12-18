@@ -12,8 +12,7 @@ class Car(Entity, Sensors):
         super().__init__(image, dims, coords, speed)
         self.front_x_coords : int = self.x + self.width//2
         self.controller : FuzzyControl = controller
-        # car will only apply the controller to the nearest obstacles
-        self.k_nearest = 3
+        self.k_nearest = 3 # car will only apply the controller to the nearest obstacles
 
     def move_left(self, times=1):
         if self.x > (const.SCREEN_WIDTH - const.ROAD_WIDTH) // 2:
@@ -154,6 +153,7 @@ if __name__ == '__main__':
     print(method_list)
 
     from .obstacle import Obstacle
+    # test the car class
     
     print('car x: ', car.x, ', car.y: ', car.y)
     obs1 = Obstacle(None, (0, 0), (100, 100), 20)
@@ -163,25 +163,25 @@ if __name__ == '__main__':
     obs4 = Obstacle(None, (0, 0), (500, 500), 20)
     obstacles = [obs1, obs12, obs2, obs3, obs4]
 
-    if test == 'get_sensor_measurings':
-        print('\n Testing sensors: \n')
-        sensor_output = car.get_sensor_measurings(obstacles)
-        print(sensor_output)
-        y, right, left = sensor_output
-        print('y: ', y)
-        print('right: ', right)
-        print('left: ', left)
+    
+    print('\n Testing sensors: \n')
+    sensor_output = car.get_sensor_measurings(obstacles)
+    print(sensor_output)
+    y, right, left = sensor_output
+    print('y: ', y)
+    print('right: ', right)
+    print('left: ', left)
 
-    elif test == 'find_nearest_obstacles':
-        print('\n Testing nearest obstacles: \n')
-        car.k_nearest = 3
-        eucl_dist = car.find_nearest_obstacles(obstacles)
-        _ = [print(obs.x, ',', obs.y) for obs in eucl_dist]
 
-        # test k bigger than the number of obstacles
-        obj_adresses = {id(obs): obs for obs in obstacles}
-        print('Distinct objects', len(obj_adresses))
-        print('Returned objects', len(eucl_dist))
+    print('\n Testing nearest obstacles: \n')
+    car.k_nearest = 3
+    eucl_dist = car.find_nearest_obstacles(obstacles)
+    _ = [print(obs.x, ',', obs.y) for obs in eucl_dist]
+
+    # test k bigger than the number of obstacles
+    obj_adresses = {id(obs): obs for obs in obstacles}
+    print('Distinct objects', len(obj_adresses))
+    print('Returned objects', len(eucl_dist))
 
         
 
