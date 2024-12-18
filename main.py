@@ -93,7 +93,11 @@ def simulate():
         pg.display.flip()
         clock.tick(const.FPS)
 
-    monitor.you_died(screen, score, start_time)
+    if ('--ds-death' in commands):
+        monitor.you_died(screen, score, start_time)
+    else:
+        monitor.endgame_text(screen, score, start_time)
+
     pg.display.flip()
 
     flag = True
