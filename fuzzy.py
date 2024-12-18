@@ -17,7 +17,7 @@ class FuzzyControl:
         self.steer_center = None
 
         # minus the car's width since it can't get out of road boundaries
-        available_road_space = ((const.ROAD_WIDTH+1)-const.CAR_WIDTH)//2
+        available_road_space = ((const.ROAD_WIDTH)-const.CAR_WIDTH)//2
 
         road_width = np.arange(0, available_road_space)
         road_length = np.arange(0, (const.SCREEN_HEIGHT+1))
@@ -26,13 +26,13 @@ class FuzzyControl:
         steering_universe = np.arange(0, norm+1)
 
         # Antecedent/Consequent objects hold universe variables and membership functions
-        distance_side = ctrl.Antecedent(road_width, 'distance_right')
+        distance_side = ctrl.Antecedent(road_width, 'distance_side')
         distance_front = ctrl.Antecedent(road_length, 'distance_front')
         steering = ctrl.Consequent(steering_universe,
                                 'steering', defuzzify_method=defuzz_method)
         self.steering = steering # para plottear en el debug
 
-        # membership for right distance
+        # membership for side distance
         distance_side.automf(5, variable_type='quant')
         self.memberships.append(distance_side)
         
@@ -44,10 +44,6 @@ class FuzzyControl:
         steering.automf(5, variable_type='quant')
         self.memberships.append(steering)
 
-        # side + front rules, automf values: 'lower'; 'low'; 'average'; 'high', or 'higher'
-        # we have combinations of two 5-valued variables, so: 
-        # 5*5 = 25 combinations without accounting consequents, but some rules are ignored
-
         # reaction to close obstacles. the first rule being the one with the highest priority
         # makes the car overpower the steering when there are other non-close obstacles activating the other rules
         rules = [ctrl.Rule(distance_side['lower'] & distance_front['lower'], steering['higher'])]
@@ -57,11 +53,6 @@ class FuzzyControl:
         rules.append(ctrl.Rule(distance_side['lower'] & distance_front['high'], steering['lower']))
         rules.append(ctrl.Rule(distance_side['lower'] & distance_front['higher'], steering['lower']))
         
-        # rules for for medium-low side reaction 
-        # TODO temporarily removed: these seem be almost a better turned off, + better performance 
-        '''rules.append(ctrl.Rule(distance_side['low'] & distance_front['lower'], steering['average']))
-        rules.append(ctrl.Rule(distance_side['low'] & distance_front['low'], steering['low']))
-        rules.append(ctrl.Rule(distance_side['low'] & distance_front['average'], steering['lower']))'''
         # rules for supressing influence from far away obstacles
         rules.append(ctrl.Rule(distance_side['low'] & distance_front['high'], steering['lower']))
         rules.append(ctrl.Rule(distance_side['low'] & distance_front['higher'], steering['lower']))
@@ -94,8 +85,7 @@ class FuzzyControl:
         self.memberships.append(steer_center)
 
         center_rules = [] 
-        center_rules.append(ctrl.Rule(distance_to_center['low']# | distance_to_center['lower'] 
-                                      , steer_center['lower']))
+        center_rules.append(ctrl.Rule(distance_to_center['low'], steer_center['lower']))
         center_rules.append(ctrl.Rule(distance_to_center['average'], steer_center['low']))
         center_rules.append(ctrl.Rule(distance_to_center['high'], steer_center['average']))
 
@@ -105,7 +95,7 @@ class FuzzyControl:
 
     def side_controller(self, x_sensor, y_sensor, debug=False):
 
-        self.ctrl_steering.input['distance_right'] = x_sensor
+        self.ctrl_steering.input['distance_side'] = x_sensor
         self.ctrl_steering.input['distance_front'] = y_sensor
         self.ctrl_steering.compute()    # Crunch the numbers
         output = self.ctrl_steering.output['steering']
@@ -137,6 +127,11 @@ class FuzzyControl:
             plt.show()
 
         return output
+    
+    def view_memberships(self):
+        for mem in self.memberships:
+            mem.view()
+        plt.show()
 
 
 
@@ -145,17 +140,9 @@ if __name__ == '__main__':
     # https://pythonhosted.org/scikit-fuzzy/api/skfuzzy.defuzzify.html#defuzz
 
     control = FuzzyControl(methods[2])
-    '''for mem in control.memberships:
+    for mem in control.memberships:
         mem.view()
     plt.show()
-    '''
-    # TODO pasos para añadir el control de retorno al centro:
-    # 1- incorporar todos los elementos en modulo de logica difusa, que acepte input
-    # 2- cambiar las llamadads a la función del controlador
-    # 3- hacer que en el main se recogan las lecturas del sensor de centro en una variable
-    # 4- pasarla al coche 
-    # 5- ver que se rompe
-    # 6- si no funciona separar en otro controlador que se active bajo ciertas condiciones
 
     dists_center = range(0, (
         ((const.ROAD_WIDTH+1)-const.CAR_WIDTH)//4
@@ -167,9 +154,9 @@ if __name__ == '__main__':
         print(r)
 
     
-    '''tests = range(0, const.ROAD_WIDTH+1, 100)
+    tests = range(0, const.ROAD_WIDTH+1, 100)
     fronts = range(0, const.SCREEN_HEIGHT+1, 150)
 
     for front in fronts:
         r = control.side_controller(50, front, debug=True)
-        print(r)'''
+        print(r)

@@ -200,8 +200,6 @@ class Environment:
 
 
 if __name__ == '__main__':
-    # TODO why the fuck doesn't this work when executing this particular module
-    # no module name monitor: package structure issue???? 
     from monitor import obstacle_img
     from obstacle import Obstacle
 

@@ -119,8 +119,7 @@ class Car(Entity, Sensors):
                 print('Last movement: move_right=', move_right)
                 
 
-            move_amount = int(
-                self.controller.side_controller(side_move, y, debug=False))
+            move_amount = self.controller.side_controller(side_move, y, debug=False)
             total_move += move_amount
 
             if move_right:
@@ -128,11 +127,10 @@ class Car(Entity, Sensors):
             else:
                 self.move_left(times=move_amount)
 
-        # TODO cambiar lógica de esto: move amount queda determinado por el último sensor
-        if total_move == 0: # if there's no activation in the side controllers, return to center
-                
-            move_amount = int(self.controller.center_controller(dist_center))
-            #print('movement on car: ', move_amount)
+        if total_move < 1: # if there's no activation in the side controllers, return to center
+            
+            move = self.controller.center_controller(dist_center)
+            move_amount = int(move) if move < 1 else move
                         
             center = (const.SCREEN_WIDTH - const.CAR_WIDTH) // 2
             if self.front_x_coords > center:
@@ -148,13 +146,12 @@ if __name__ == '__main__':
     test = 'find_nearest_obstacles'
 
     car = Car(None, (0, 0), (300, 300), 20, None)
-    '''print(car.__dict__)
-    # print(dir(car))
+    print(car.__dict__)
     method_list = [
         func for func in dir(car) if
         callable(getattr(car, func)) and not func.startswith("__")
     ]
-    print(method_list)'''
+    print(method_list)
 
     from .obstacle import Obstacle
     
@@ -185,9 +182,6 @@ if __name__ == '__main__':
         obj_adresses = {id(obs): obs for obs in obstacles}
         print('Distinct objects', len(obj_adresses))
         print('Returned objects', len(eucl_dist))
-
-        # TODO si funciona hay que dibujar los sensores solo para los 
-        # k obstaculos pillados
 
         
 

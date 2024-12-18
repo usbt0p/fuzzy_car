@@ -36,6 +36,7 @@ def draw_right_sensor(screen, car, obstacle, distance):
                      (car.front_x_coords, car.y),
                      (obstacle.front_x_coords,
                       car.y), 2)
+        distance = int(distance)
 
     text_surface = distance_font.render(
         f'RIGHT DIST: {distance}', False, clrs.WHITE)
@@ -50,6 +51,7 @@ def draw_left_sensor(screen, car, obstacle, distance):
                      (car.front_x_coords, car.y),
                      (obstacle.front_x_coords,
                       car.y), 2)
+        distance = int(distance)
 
     text_surface = distance_font.render(
         f'LEFT DIST: {distance}', False, clrs.WHITE)
@@ -128,7 +130,7 @@ def you_died(screen, score, start_time):
     
     # play dark souls death sound
     pg.mixer.init() 
-    pg.mixer.music.load("imgs\dark-souls-you-died-sound-effect.mp3") 
+    pg.mixer.music.load("imgs/dark-souls-you-died-sound-effect.mp3") 
     pg.mixer.music.set_volume(0.9) 
     pg.mixer.music.play() 
     

@@ -34,6 +34,7 @@ def simulate():
 
     # decalre list(Obstacle()) and simulation constants
     obstacles = []
+    const.MAX_OBSTACLES = 6
     score = 0
     running = True
     Entity._hitbox = False
